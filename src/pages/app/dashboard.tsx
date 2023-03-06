@@ -1,32 +1,47 @@
+import { useSession } from 'next-auth/react';
+import NewItemForm from '../../components/forms/NewItemForm';
 import AppLayout from '../../components/layouts/mainApp/AppLayout';
 import { type NextPageWithLayout } from '../_app';
 
 const Dashboard: NextPageWithLayout = () => {
+  const { data: session } = useSession();
+  if (!session) return null;
+
+  console.log(session);
+
   return (
-    <article className="">
-      <div className="">Dashboard</div>
+    <article className="flex h-full flex-col">
+      <div className="flex justify-between">
+        <section className="w-1/2">
+          <h1 className="mb-5 text-5xl text-green-500">
+            Hey, {session.user.name}
+          </h1>
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <rect width="100%" height="100%" fill="#9792e3" />
+            <circle cx="30" cy="30" r="4" fill="black" />
+            <circle cx="70" cy="30" r="4" fill="black" />
+            <path
+              d="M 30 50 Q 50 60 70 50"
+              stroke="black"
+              strokeWidth="5"
+              fill="none"
+            />
+          </svg>
+        </section>
+        <section className="w-1/2">
+          <h1 className="mb-5 text-5xl text-red-400">New Item</h1>
+          <NewItemForm />
+        </section>
+      </div>
+      <section className="">
+        <h1 className="mb-5 text-5xl text-red-400">Wishlist Items</h1>
+      </section>
+      <section className="">
+        <h1 className="mb-5 text-5xl text-red-400">Upcoming Birthdays</h1>
+      </section>
     </article>
   );
 };
-
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//   const session = await getServerAuthSession(ctx);
-
-//   if (!session) {
-//     return {
-//       redirect: {
-//         destination: '/login',
-//         permanent: false,
-//       },
-//     };
-//   }
-
-//   return {
-//     props: {
-//       session,
-//     },
-//   };
-// };
 
 export default Dashboard;
 

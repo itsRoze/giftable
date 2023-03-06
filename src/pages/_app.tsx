@@ -9,7 +9,7 @@ import { type ReactElement, type ReactNode } from 'react';
 import '~/styles/globals.css';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export type NextPageWithLayout = NextPage & {
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 
