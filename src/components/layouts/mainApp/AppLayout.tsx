@@ -1,12 +1,17 @@
+import Navbar from './Navbar';
+
 interface IAppLAyout {
   children: React.ReactNode;
 }
 
 const AppLayout: React.FC<IAppLAyout> = ({ children }) => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-      {children}
-    </main>
+    <div className="flex">
+      <Navbar />
+      <main className="ml-2 flex min-h-screen flex-1 flex-col bg-indigo-50">
+        {children}
+      </main>
+    </div>
   );
 };
 

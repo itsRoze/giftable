@@ -32,8 +32,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-    props: {
-      session,
+    redirect: {
+      destination: '/app/dashboard',
+      permanent: false,
     },
   };
 };
