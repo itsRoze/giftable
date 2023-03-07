@@ -1,10 +1,13 @@
 import { useSession } from 'next-auth/react';
 import NewItemForm from '../../components/forms/NewItemForm';
 import AppLayout from '../../components/layouts/mainApp/AppLayout';
+import WishlistGallery from '../../components/WishlistGallery';
+import { api } from '../../utils/api';
 import { type NextPageWithLayout } from '../_app';
 
 const Dashboard: NextPageWithLayout = () => {
   const { data: session } = useSession();
+  const wishlistQuery = api.wishlist.getMyItems.useQuery(13);
   if (!session) return null;
 
   console.log(session);
@@ -35,6 +38,7 @@ const Dashboard: NextPageWithLayout = () => {
       </div>
       <section className="">
         <h1 className="mb-5 text-5xl text-red-400">Wishlist Items</h1>
+        <WishlistGallery items={wishlistQuery.data?.items || []} />
       </section>
       <section className="">
         <h1 className="mb-5 text-5xl text-red-400">Upcoming Birthdays</h1>

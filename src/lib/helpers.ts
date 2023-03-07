@@ -14,3 +14,24 @@ export default function usePush(): NextRouter['push'] {
 
   return push;
 }
+
+export const createFakeItems = (numItems: number): Item[] => {
+  const fakeItems = [];
+  for (let i = 1; i <= numItems; i++) {
+    fakeItems.push({
+      id: i,
+      name: `Item ${i}`,
+      description: `This is item ${i}`,
+      url: 'https://www.google.com',
+    });
+  }
+
+  return fakeItems;
+};
+
+export type Item = {
+  id: number;
+  name: string;
+  description: string;
+  url: string;
+};
