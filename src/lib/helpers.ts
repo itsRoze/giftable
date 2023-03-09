@@ -35,3 +35,22 @@ export type Item = {
   description: string;
   url: string;
 };
+
+export const createFakeBirthdays = (numItems: number): BirthdayItem[] => {
+  const fakeItems = [];
+  for (let i = 1; i <= numItems; i++) {
+    fakeItems.push({
+      id: i,
+      name: `Marsha`,
+      birthday: 'February 25',
+    });
+  }
+
+  return fakeItems;
+};
+
+export type BirthdayItem = {
+  id: number;
+  name: string;
+  birthday: string;
+};
