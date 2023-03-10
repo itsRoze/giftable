@@ -48,13 +48,51 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
+    id                     String         @id @default(cuid())
+    name                   String
+    email                  String?        @unique
+    emailVerified          DateTime?
+    image                  String?
+    accounts               Account[]
+    sessions               Session[]
+    birthday               DateTime
+    userId                 String?
+    friends                Friend[]       @relation("Friendship")
+    sentFriendRequests     Friend[]       @relation("SentFriendRequest")
+    receivedFriendRequests Friend[]       @relation("ReceivedFriendRequest")
+    wishlist               WishlistItem[]
+    myGiftIdeas            GiftIdea[]     @relation("GiftIdeaFromUser")
+    friendsGiftIdeas       GiftIdea[]     @relation("GiftIdeaToUser")
+}
+
+model Friend {
+    id          String @id @default(cuid())
+    status      String @default("pending")
+    requester   User   @relation("SentFriendRequest", fields: [requesterId], references: [id])
+    requesterId String
+    requested   User   @relation("ReceivedFriendRequest", fields: [requestedId], references: [id])
+    requestedId String
+    users       User[] @relation("Friendship")
+
+    @@unique([requesterId, requestedId])
+}
+
+model WishlistItem {
+    id     Int    @id @default(autoincrement())
+    name   String
+    url    String
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+}
+
+model GiftIdea {
+    id             Int    @id @default(autoincrement())
+    name           String
+    url            String
+    giftFromUser   User   @relation("GiftIdeaFromUser", fields: [giftFromUserId], references: [id])
+    giftFromUserId String
+    giftToUser     User   @relation("GiftIdeaToUser", fields: [giftToUserId], references: [id])
+    giftToUserId   String
 }
 
 model VerificationToken {
