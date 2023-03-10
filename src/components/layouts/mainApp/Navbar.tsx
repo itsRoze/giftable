@@ -1,8 +1,22 @@
 import Link from 'next/link';
+import { useState } from 'react';
 import { api } from '../../../utils/api';
 
 const Navbar = () => {
   const friendsQuery = api.friends.getFriends.useQuery();
+  const [searchBarQuery, setSearchBarQuery] = useState('');
+  const [friendsList, setFriendsList] = useState(
+    friendsQuery.data?.friends || []
+  );
+
+  const handleSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filteredFriends = friendsQuery.data?.friends.filter((friend) => {
+      if (e.target.value === '') return friendsQuery.data?.friends;
+      return friend.name.toLowerCase().includes(e.target.value.toLowerCase());
+    });
+    setSearchBarQuery(e.target.value);
+    setFriendsList(filteredFriends || []);
+  };
 
   return (
     <nav className=" drawer-mobile drawer w-1/6 border-r border-purple-300 bg-purple-200 shadow-[4px_1px_3px_rgba(0,0,0,0.25)]">
@@ -23,15 +37,17 @@ const Navbar = () => {
             <Link href="#">Your List</Link>
           </li>
           <li>
-            <Link href="#">Friends List</Link>
+            <Link href="#">Gift Ideas</Link>
           </li>
           <h3 className="text-lg font-semibold text-purple-500">Friends</h3>
           <input
             type="text"
+            typeof="search"
             placeholder="Search"
+            onChange={handleSearchQuery}
             className="input-bordered input w-full max-w-xs rounded-2xl bg-white"
           />
-          {friendsQuery.data?.friends
+          {friendsList
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((friend) => (
               <li key={friend.id}>
