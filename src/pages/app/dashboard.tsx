@@ -1,29 +1,22 @@
 import { useSession } from 'next-auth/react';
-import Carousel from '../../components/Carousel';
+import BirthdayCard from '../../components/BirthdayCard';
 import NewItemForm from '../../components/forms/NewItemForm';
+import ItemCard from '../../components/ItemCard';
 import AppLayout from '../../components/layouts/mainApp/AppLayout';
-import WishlistGallery from '../../components/WishlistGallery';
 import { api } from '../../utils/api';
 import { type NextPageWithLayout } from '../_app';
 
 const Dashboard: NextPageWithLayout = () => {
   const { data: session } = useSession();
-  const wishlistQuery = api.wishlist.getMyItems.useQuery(13);
-  const friendsQuery = api.friends.getUpcomingBirthdays.useQuery(6);
+  const wishlistQuery = api.wishlist.getMyItems.useQuery(3);
+  const friendsQuery = api.friends.getUpcomingBirthdays.useQuery(3);
 
   if (!session) return null;
 
   console.log(session);
 
-  const cardData = [
-    { id: 1, name: 'John', birthday: '01/01/2000' },
-    { id: 2, name: 'Louis', birthday: '01/01/2000' },
-    { id: 3, name: 'Karen', birthday: '01/01/2000' },
-    { id: 4, name: 'Bree', birthday: '01/01/2000' },
-  ];
-
   return (
-    <article className="flex h-full flex-col">
+    <article className="flex h-full flex-col space-y-6">
       <div className="flex justify-between">
         <section className="w-1/2">
           <h1 className="mb-5 text-5xl text-green-500">
@@ -48,11 +41,31 @@ const Dashboard: NextPageWithLayout = () => {
       </div>
       <section className="">
         <h1 className="mb-5 text-5xl text-red-400">Wishlist Items</h1>
-        <WishlistGallery items={wishlistQuery.data?.items || []} />
+        <ul className="flex space-x-6">
+          {wishlistQuery.data?.items.map((item) => (
+            <li key={item.id}>
+              <ItemCard
+                description={item.description}
+                title={item.name}
+                url={item.url}
+              />
+            </li>
+          ))}
+        </ul>
       </section>
       <section className="">
         <h1 className="mb-5 text-5xl text-red-400">Upcoming Birthdays</h1>
-        <Carousel cards={cardData} />
+        <ul className="flex space-x-6">
+          {friendsQuery.data?.items.map((item) => (
+            <li key={item.id}>
+              <BirthdayCard
+                id={item.id}
+                birthday={item.birthday}
+                name={item.name}
+              />
+            </li>
+          ))}
+        </ul>
       </section>
     </article>
   );

@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import { BirthdayItem } from '../lib/helpers';
-import Checkbox from './Checkbox';
+import { type BirthdayItem } from '../lib/helpers';
 
 const BirthdayCard: React.FC<BirthdayItem> = ({ id, birthday, name }) => {
   return (
@@ -28,9 +27,14 @@ const BirthdayCard: React.FC<BirthdayItem> = ({ id, birthday, name }) => {
         <Link href="#" className="underline">
           View Wishlist ↗️
         </Link>
-        <div className="flex items-center">
-          <p className="flex-grow-0">Gift Bought?</p>
-          <Checkbox id={1} />
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <span className="label-text">Gift bought?</span>
+            <input
+              type="checkbox"
+              className="checkbox-primary checkbox border-2 border-gray-300"
+            />
+          </label>
         </div>
       </div>
     </div>

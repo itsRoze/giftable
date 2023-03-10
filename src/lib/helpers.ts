@@ -54,3 +54,61 @@ export type BirthdayItem = {
   name: string;
   birthday: string;
 };
+
+export const createFakeFriends = (): Friend[] => {
+  const fakeItems = [];
+  const names = [
+    'Abi Bender',
+    'Alec Marquez',
+    'Caspar Sampson',
+    'Ellis Ochoa',
+    'Elsie Walter',
+    'Ethan Lawrence',
+    'Eva Caldwell',
+    'Finnian Casey',
+    'Herman Paul',
+    'Kain Fleming',
+    'Lauren Olsen',
+    'Mahir Landry',
+    'Marsha Macdonald',
+    'Nicolas Burgess',
+    'Phyllis Stuart',
+    'Priya Mitchell',
+    'Rio Trujillo',
+    'Simeon Gilmore',
+    'Viktor Mejia',
+    'Yasmine Saunders',
+    'Abi Bender',
+    'Alec Marquez',
+    'Caspar Sampson',
+    'Ellis Ochoa',
+    'Elsie Walter',
+    'Ethan Lawrence',
+    'Eva Caldwell',
+    'Finnian Casey',
+    'Herman Paul',
+    'Kain Fleming',
+    'Lauren Olsen',
+    'Mahir Landry',
+    'Marsha Macdonald',
+    'Nicolas Burgess',
+    'Phyllis Stuart',
+    'Priya Mitchell',
+    'Rio Trujillo',
+    'Simeon Gilmore',
+    'Viktor Mejia',
+    'Yasmine Saunders',
+  ];
+  for (let i = 1; i <= names.length; i++) {
+    fakeItems.push({
+      id: i,
+      name: names[i - 1] as string,
+    });
+  }
+  return fakeItems;
+};
+
+export type Friend = {
+  id: number;
+  name: string;
+};

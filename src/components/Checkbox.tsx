@@ -6,12 +6,9 @@ interface Props {
 }
 
 const Checkbox: React.FC<Props> = ({ id }) => {
-  const [isSelected, setIsSelected] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [checkHovering, setCheckHovering] = useState(false);
 
   const handleOnCheck = () => {
-    setIsSelected(false);
     setChecked((value) => !value);
   };
 
@@ -26,8 +23,6 @@ const Checkbox: React.FC<Props> = ({ id }) => {
           type={'checkbox'}
           checked={checked}
           onChange={handleOnCheck}
-          onMouseOut={() => setCheckHovering(false)}
-          onMouseOver={() => setCheckHovering(true)}
           className="bg-transparent-100 peer pointer-events-auto z-10 cursor-pointer appearance-none rounded-lg border-2 border-transparent p-3"
         />
         <span className="absolute rounded-lg border-2 border-slate-200 p-3 peer-checked:bg-slate-500 "></span>
