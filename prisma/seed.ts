@@ -21,7 +21,7 @@ const createUsers = async () => {
   await prisma.user.deleteMany();
 
   for (const name of userNames) {
-    const user = makeUser(name as string);
+    const user = makeUser(name);
 
     await prisma.user.create({
       data: user,
