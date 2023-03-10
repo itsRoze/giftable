@@ -4,7 +4,6 @@ import { api } from '../../../utils/api';
 
 const Navbar = () => {
   const friendsQuery = api.friends.getFriends.useQuery();
-  const [searchBarQuery, setSearchBarQuery] = useState('');
   const [friendsList, setFriendsList] = useState(
     friendsQuery.data?.friends || []
   );
@@ -14,7 +13,6 @@ const Navbar = () => {
       if (e.target.value === '') return friendsQuery.data?.friends;
       return friend.name.toLowerCase().includes(e.target.value.toLowerCase());
     });
-    setSearchBarQuery(e.target.value);
     setFriendsList(filteredFriends || []);
   };
 
