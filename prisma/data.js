@@ -23,6 +23,26 @@ const userNames = [
   'Yasmine Saunders',
 ];
 
+const wishlist = [
+  {
+    name: 'Macbook Pro',
+    url: 'https://www.apple.com/macbook-pro-13/',
+  },
+  {
+    name: 'iPhone 12',
+    url: 'https://www.apple.com/iphone-12/',
+  },
+  {
+    name: 'iPad Pro',
+    url: 'https://www.apple.com/ipad-pro-12-9/',
+  },
+  {
+    name: 'Kindle Paperwhite',
+    url: 'https://www.amazon.com/dp/B08KTZ8249',
+  },
+];
+
 module.exports = {
   userNames,
+  wishlist,
 };

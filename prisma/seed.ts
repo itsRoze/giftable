@@ -1,6 +1,7 @@
 import { prisma } from '~/server/db';
-import { userNames } from './data.js';
+import { userNames, wishlist } from './data.js';
 
+//  Create Users
 const randomDate = () => {
   const start = new Date(1970, 0, 1);
   const end = new Date();
@@ -29,6 +30,7 @@ const createUsers = async () => {
   }
 };
 
+// Create Friends
 const createFriends = async () => {
   const jessicaUser = await prisma.user.findUnique({
     where: {
@@ -79,9 +81,29 @@ const createFriends = async () => {
   console.log(jessicaUser);
 };
 
+// Create Wishlist
+const createWishlist = async () => {
+  for (const item of wishlist) {
+    await prisma.user.update({
+      where: {
+        email: 'jessicahart@gmail.com',
+      },
+      data: {
+        wishlist: {
+          create: {
+            name: item.name,
+            url: item.url,
+          },
+        },
+      },
+    });
+  }
+};
+
 async function main() {
   await createUsers();
   await createFriends();
+  await createWishlist();
 }
 
 main()
