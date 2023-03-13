@@ -1,7 +1,29 @@
-const NewItemForm: React.FC = () => {
+import { useState } from 'react';
+import { api } from '../../utils/api';
+
+interface Props {
+  refetch: () => void;
+}
+
+const NewItemForm: React.FC<Props> = ({ refetch }) => {
+  const wishlistMutation = api.wishlist.createItem.useMutation({
+    onSuccess: () => {
+      refetch();
+      console.log('submitted');
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  const [name, setName] = useState('');
+  const [url, setUrl] = useState('');
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('submitted');
+    wishlistMutation.mutate({ name, url });
+    setName('');
+    setUrl('');
   };
 
   return (
@@ -11,21 +33,16 @@ const NewItemForm: React.FC = () => {
         <label className="font-medium text-indigo-400">Name</label>
         <input
           type="text"
-          placeholder="Type here"
+          placeholder="e.g. Raincoat"
+          onChange={(e) => setName(e.target.value)}
           className="input-bordered input col-span-3 w-full max-w-xs bg-white"
         />
         {/* Url */}
         <label className="font-medium text-indigo-400">Url</label>
         <input
-          type="text"
-          placeholder="Type here"
-          className="input-bordered input col-span-3 w-full max-w-xs bg-white"
-        />
-        {/* List */}
-        <label className="font-medium text-indigo-400">List</label>
-        <input
-          type="text"
-          placeholder="Type here"
+          type="url"
+          placeholder="www.example.com"
+          onChange={(e) => setUrl(e.target.value)}
           className="input-bordered input col-span-3 w-full max-w-xs bg-white"
         />
       </div>

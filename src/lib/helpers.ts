@@ -50,7 +50,6 @@ export const createFakeBirthdays = (numItems: number): BirthdayItem[] => {
 };
 
 export type BirthdayItem = {
-  id: number;
   name: string;
   birthday: string;
 };

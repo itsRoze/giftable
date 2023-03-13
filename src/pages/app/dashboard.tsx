@@ -8,12 +8,12 @@ import { type NextPageWithLayout } from '../_app';
 
 const Dashboard: NextPageWithLayout = () => {
   const { data: session } = useSession();
-  const wishlistQuery = api.wishlist.getMyItems.useQuery(3);
-  const friendsQuery = api.friends.getUpcomingBirthdays.useQuery(3);
+  const { data: wishlistItems, refetch: refetchWishlist } =
+    api.wishlist.getMyItems.useQuery();
+  const { data: upcomingBirthdays } =
+    api.friends.getUpcomingBirthdays.useQuery();
 
   if (!session) return null;
-
-  console.log(session);
 
   return (
     <article className="flex h-full flex-col space-y-6">
@@ -36,31 +36,26 @@ const Dashboard: NextPageWithLayout = () => {
         </section>
         <section className="w-1/2">
           <h1 className="mb-5 text-5xl text-red-400">New Item</h1>
-          <NewItemForm />
+          <NewItemForm refetch={refetchWishlist} />
         </section>
       </div>
       <section className="">
         <h1 className="mb-5 text-5xl text-red-400">Wishlist Items</h1>
-        <ul className="flex space-x-6">
-          {wishlistQuery.data?.items.map((item) => (
+        <ul className="grid w-9/12 grid-cols-3 gap-y-4">
+          {wishlistItems?.items.map((item) => (
             <li key={item.id}>
-              <ItemCard
-                description={item.description}
-                title={item.name}
-                url={item.url}
-              />
+              <ItemCard title={item.name} url={item.url} />
             </li>
           ))}
         </ul>
       </section>
       <section className="">
         <h1 className="mb-5 text-5xl text-red-400">Upcoming Birthdays</h1>
-        <ul className="flex space-x-6">
-          {friendsQuery.data?.items.map((item) => (
+        <ul className="custom-scroll grid w-9/12 grid-cols-3 gap-y-4 overflow-y-scroll">
+          {upcomingBirthdays?.friends.map((item) => (
             <li key={item.id}>
               <BirthdayCard
-                id={item.id}
-                birthday={item.birthday}
+                birthday={item.birthday.toLocaleDateString()}
                 name={item.name}
               />
             </li>

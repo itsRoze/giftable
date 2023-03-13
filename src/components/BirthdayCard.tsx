@@ -1,12 +1,18 @@
+import moment from 'moment';
 import Link from 'next/link';
 import { type BirthdayItem } from '../lib/helpers';
 
-const BirthdayCard: React.FC<BirthdayItem> = ({ id, birthday, name }) => {
+const BirthdayCard: React.FC<BirthdayItem> = ({ birthday, name }) => {
   return (
-    <div className="card-compact card-bordered card w-60 border-gray-400 bg-white">
+    <div className="card-bordered card card-compact w-80 border-gray-400 bg-white">
       <div className="card-body">
         <div className="flex items-start">
-          <svg width="50" height="50" viewBox="0 0 100 100">
+          <svg
+            width="50"
+            height="50"
+            viewBox="0 0 100 100"
+            className="h-12 w-12"
+          >
             <rect width="100%" height="100%" fill="#9792e3" />
             <circle cx="30" cy="30" r="4" fill="black" />
             <circle cx="70" cy="30" r="4" fill="black" />
@@ -21,7 +27,7 @@ const BirthdayCard: React.FC<BirthdayItem> = ({ id, birthday, name }) => {
             <h2 className="card-title text-2xl font-normal text-gray-600">
               {name}
             </h2>
-            <p>🎂 {birthday}</p>
+            <p>🎂 {moment(birthday).format('MMMM, DD')}</p>
           </div>
         </div>
         <Link href="#" className="underline">

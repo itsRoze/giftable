@@ -1,16 +1,14 @@
 interface Props {
   title: string;
-  description: string;
   url: string;
 }
 
-const ItemCard: React.FC<Props> = ({ title, description, url }) => {
+const ItemCard: React.FC<Props> = ({ title, url }) => {
   return (
-    <div className="card-bordered card w-80 border-gray-400 bg-white	">
+    <div className="card-bordered card w-72 border-gray-400 bg-white	">
       <div className="card-body">
         <h2 className="card-title text-pink-400">{title}</h2>
-        <p>{description}</p>
-        <div className="card-actions justify-end">
+        <div className="card-actions ">
           <a
             href={url}
             target="_blank"
