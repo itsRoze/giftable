@@ -52,12 +52,12 @@ const Dashboard: NextPageWithLayout = () => {
       <section className="">
         <h1 className="mb-5 text-5xl text-red-400">Upcoming Birthdays</h1>
         <ul className="custom-scroll grid w-9/12 grid-cols-3 gap-y-4 overflow-y-scroll">
-          {upcomingBirthdays?.friends.map((item) => (
-            <li key={item.id}>
+          {upcomingBirthdays?.friends.map((user) => (
+            <li key={user.id}>
               <BirthdayCard
-                id={item.id}
-                birthday={item.birthday.toLocaleDateString()}
-                name={item.name}
+                userId={user.id}
+                birthday={user.birthday}
+                name={user.name}
               />
             </li>
           ))}

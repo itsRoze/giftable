@@ -37,12 +37,21 @@ export type Item = {
 };
 
 export const createFakeBirthdays = (numItems: number): BirthdayItem[] => {
+  // Generate a random date in the past 50 years
+  const randomDate = () => {
+    const start = new Date();
+    const end = new Date();
+    end.setFullYear(end.getFullYear() - 50);
+    return new Date(
+      start.getTime() + Math.random() * (start.getTime() - end.getTime())
+    );
+  };
   const fakeItems = [];
   for (let i = 1; i <= numItems; i++) {
     fakeItems.push({
-      id: i.toString(),
+      userId: i.toString(),
       name: `Marsha`,
-      birthday: 'February 25',
+      birthday: randomDate(),
     });
   }
 
@@ -50,9 +59,9 @@ export const createFakeBirthdays = (numItems: number): BirthdayItem[] => {
 };
 
 export type BirthdayItem = {
-  id: string;
+  userId: string;
   name: string;
-  birthday: string;
+  birthday: Date;
 };
 
 export const createFakeFriends = (): Friend[] => {

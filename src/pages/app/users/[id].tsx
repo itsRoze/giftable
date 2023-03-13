@@ -2,6 +2,7 @@ import { FriendStatus } from '@prisma/client';
 import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import ItemCard from '../../../components/ItemCard';
 import AppLayout from '../../../components/layouts/mainApp/AppLayout';
 import { api } from '../../../utils/api';
 import { type NextPageWithLayout } from '../../_app';
@@ -76,6 +77,13 @@ const UserProfile: NextPageWithLayout = () => {
         <h1 className="mb-5 text-5xl text-red-400">
           {user.name}&apos;s Wishlist
         </h1>
+        <ul className="grid w-9/12 grid-cols-3 gap-y-4">
+          {user.wishlist.map((item) => (
+            <li key={item.id}>
+              <ItemCard title={item.name} url={item.url} />
+            </li>
+          ))}
+        </ul>
       </section>
       <section>
         <h1 className="mb-5 text-5xl text-red-400">

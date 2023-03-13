@@ -40,6 +40,10 @@ const wishlist = [
     name: 'Kindle Paperwhite',
     url: 'https://www.amazon.com/dp/B08KTZ8249',
   },
+  {
+    name: 'The Art of War by Sun Tzu',
+    url: 'https://www.barnesandnoble.com/w/the-art-of-war-sun-tzu/1116627606',
+  },
 ];
 
 module.exports = {
