@@ -2,7 +2,7 @@ import moment from 'moment';
 import Link from 'next/link';
 import { type BirthdayItem } from '../lib/helpers';
 
-const BirthdayCard: React.FC<BirthdayItem> = ({ birthday, name }) => {
+const BirthdayCard: React.FC<BirthdayItem> = ({ id, birthday, name }) => {
   return (
     <div className="card-bordered card card-compact w-80 border-gray-400 bg-white">
       <div className="card-body">
@@ -30,7 +30,10 @@ const BirthdayCard: React.FC<BirthdayItem> = ({ birthday, name }) => {
             <p>🎂 {moment(birthday).format('MMMM, DD')}</p>
           </div>
         </div>
-        <Link href="#" className="underline">
+        <Link
+          href={`/app/users/${encodeURIComponent(id)}`}
+          className="underline"
+        >
           View Wishlist ↗️
         </Link>
         <div className="form-control">

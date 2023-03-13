@@ -11,8 +11,13 @@ const randomDate = () => {
 };
 
 const makeUser = (name: string) => {
+  // Random user pronouns
+  const pronouns = ['she/her', 'he/him', 'they/them', 'ze/zir', 'any/all'];
+  const randomPronouns = pronouns[Math.floor(Math.random() * pronouns.length)];
+
   return {
     name,
+    pronouns: randomPronouns,
     email: `${name.toLowerCase().replace(' ', '')}@gmail.com`,
     birthday: randomDate(),
   };
@@ -21,13 +26,15 @@ const makeUser = (name: string) => {
 const createUsers = async () => {
   await prisma.user.deleteMany();
 
+  const users = [];
   for (const name of userNames) {
     const user = makeUser(name);
-
-    await prisma.user.create({
-      data: user,
-    });
+    users.push(user);
   }
+
+  await prisma.user.createMany({
+    data: users,
+  });
 };
 
 // Create Friends
@@ -55,7 +62,7 @@ const createFriends = async () => {
           create: {
             requestedId: user.id,
             requesterId: jessicaId,
-            status: 'accepted',
+            status: 'ACCEPTED',
           },
         },
       },

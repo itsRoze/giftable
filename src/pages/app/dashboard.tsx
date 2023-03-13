@@ -55,6 +55,7 @@ const Dashboard: NextPageWithLayout = () => {
           {upcomingBirthdays?.friends.map((item) => (
             <li key={item.id}>
               <BirthdayCard
+                id={item.id}
                 birthday={item.birthday.toLocaleDateString()}
                 name={item.name}
               />

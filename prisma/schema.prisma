@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "postgresql"
     // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -27,12 +27,12 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? // @db.Text
+    id_token          String? @db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -63,18 +63,25 @@ model User {
     wishlist               WishlistItem[]
     myGiftIdeas            GiftIdea[]     @relation("GiftIdeaFromUser")
     friendsGiftIdeas       GiftIdea[]     @relation("GiftIdeaToUser")
+    pronouns               String?
 }
 
 model Friend {
-    id          String @id @default(cuid())
-    status      String @default("pending")
-    requester   User   @relation("SentFriendRequest", fields: [requesterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    id          String       @id @default(cuid())
+    status      FriendStatus
+    requester   User         @relation("SentFriendRequest", fields: [requesterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     requesterId String
-    requested   User   @relation("ReceivedFriendRequest", fields: [requestedId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    requested   User         @relation("ReceivedFriendRequest", fields: [requestedId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     requestedId String
-    users       User[] @relation("Friendship")
+    users       User[]       @relation("Friendship")
 
     @@unique([requesterId, requestedId])
+}
+
+enum FriendStatus {
+    PENDING
+    ACCEPTED
+    REJECTED
 }
 
 model WishlistItem {

@@ -40,7 +40,7 @@ export const createFakeBirthdays = (numItems: number): BirthdayItem[] => {
   const fakeItems = [];
   for (let i = 1; i <= numItems; i++) {
     fakeItems.push({
-      id: i,
+      id: i.toString(),
       name: `Marsha`,
       birthday: 'February 25',
     });
@@ -50,6 +50,7 @@ export const createFakeBirthdays = (numItems: number): BirthdayItem[] => {
 };
 
 export type BirthdayItem = {
+  id: string;
   name: string;
   birthday: string;
 };

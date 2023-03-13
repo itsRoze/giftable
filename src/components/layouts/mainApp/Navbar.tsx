@@ -46,7 +46,9 @@ const Navbar = () => {
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map((friend) => (
                   <li key={friend.id}>
-                    <Link href="#">{friend.name}</Link>
+                    <Link href={`/app/users/${encodeURIComponent(friend.id)}`}>
+                      {friend.name}
+                    </Link>
                   </li>
                 ))}
             </>
