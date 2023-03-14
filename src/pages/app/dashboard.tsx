@@ -44,7 +44,7 @@ const Dashboard: NextPageWithLayout = () => {
         <ul className="grid w-9/12 grid-cols-3 gap-y-4">
           {wishlistItems?.items.map((item) => (
             <li key={item.id}>
-              <ItemCard title={item.name} url={item.url} />
+              <ItemCard item={item} />
             </li>
           ))}
         </ul>

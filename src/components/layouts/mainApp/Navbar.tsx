@@ -17,10 +17,10 @@ const Navbar = () => {
         <ul className="menu p-4 text-base-content">
           <h3 className="text-lg font-semibold text-purple-500">Wishlists</h3>
           <li>
-            <Link href="#">Your List</Link>
+            <Link href="/app/wishlist">Your List</Link>
           </li>
           <li>
-            <Link href="#">Gift Ideas</Link>
+            <Link href="/app/giftideas">Gift Ideas</Link>
           </li>
           <h3 className="text-lg font-semibold text-purple-500">Friends</h3>
           {friendsQuery.isLoading ? (

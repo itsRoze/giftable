@@ -27,4 +27,14 @@ export const giftIdeasRouter = createTRPCRouter({
         },
       });
     }),
+  getMyGiftIdeas: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
+      select: {
+        myGiftIdeas: true,
+      },
+    });
+  }),
 });

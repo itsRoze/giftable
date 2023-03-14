@@ -1,11 +1,11 @@
 import { FriendStatus } from '@prisma/client';
 import moment from 'moment';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import AddFriendBtn from '../../../components/AddFriendBtn';
 import CancelRequestBtn from '../../../components/CancelRequestBtn';
 import AddGiftIdeaForm from '../../../components/forms/AddGiftIdeaForm';
+import HomeBtn from '../../../components/HomeBtn';
 import ItemCard from '../../../components/ItemCard';
 import AppLayout from '../../../components/layouts/mainApp/AppLayout';
 import { api } from '../../../utils/api';
@@ -29,25 +29,7 @@ const UserProfile: NextPageWithLayout = () => {
 
   return (
     <article className="flex h-full flex-col space-y-6">
-      <Link
-        href="/app/dashboard"
-        className="btn-circle btn border-none bg-indigo-100"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2.5}
-          stroke="currentColor"
-          className="h-8 w-8 text-indigo-400"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-          />
-        </svg>
-      </Link>
+      <HomeBtn />
       <section className="flex flex-col items-center justify-center">
         <h1 className="mb-5 text-5xl text-green-500">{user.name}</h1>
         <h2 className="py-1 text-xl">({user.pronouns})</h2>
@@ -88,7 +70,7 @@ const UserProfile: NextPageWithLayout = () => {
         <ul className="grid w-9/12 grid-cols-3 gap-y-4">
           {user.wishlist.map((item) => (
             <li key={item.id}>
-              <ItemCard title={item.name} url={item.url} />
+              <ItemCard item={item} />
             </li>
           ))}
         </ul>
@@ -110,7 +92,7 @@ const UserProfile: NextPageWithLayout = () => {
               .filter((idea) => idea.giftFromUserId === session?.user.id)
               .map((item) => (
                 <li key={item.id}>
-                  <ItemCard title={item.name} url={item.url} />
+                  <ItemCard item={item} />
                 </li>
               ))}
           </ul>
