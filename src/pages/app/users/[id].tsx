@@ -85,11 +85,13 @@ const UserProfile: NextPageWithLayout = () => {
           ))}
         </ul>
       </section>
-      <section>
-        <h1 className="mb-5 text-5xl text-red-400">
-          Your Gift Ideas for {user.name}
-        </h1>
-      </section>
+      {friendStatus?.status === FriendStatus.ACCEPTED ? (
+        <section>
+          <h1 className="mb-5 text-5xl text-red-400">
+            Your Gift Ideas for {user.name}
+          </h1>
+        </section>
+      ) : null}
     </article>
   );
 };

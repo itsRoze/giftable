@@ -33,6 +33,7 @@ const Navbar = () => {
                 type="text"
                 typeof="search"
                 placeholder="Search"
+                value={searchQuery}
                 onChange={handleSearchQuery}
                 className="input-bordered input w-full max-w-xs rounded-2xl bg-white"
               />
@@ -51,6 +52,16 @@ const Navbar = () => {
                     </Link>
                   </li>
                 ))}
+              {searchQuery ? (
+                <Link
+                  className="py-5 px-2 underline"
+                  href={`/app/users?search=${encodeURIComponent(searchQuery)}`}
+                  onClick={() => setSearchQuery('')}
+                  as={`/app/users`}
+                >
+                  Search for more users ↗️
+                </Link>
+              ) : null}
             </>
           )}
         </ul>

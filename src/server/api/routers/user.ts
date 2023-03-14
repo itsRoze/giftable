@@ -37,4 +37,19 @@ export const userRouter = createTRPCRouter({
         status: friendshipData?.status,
       };
     }),
+  findUsers: protectedProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      if (!input) {
+        return [];
+      }
+      return ctx.prisma.user.findMany({
+        where: {
+          name: {
+            contains: input,
+            mode: 'insensitive',
+          },
+        },
+      });
+    }),
 });
