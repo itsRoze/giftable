@@ -2,6 +2,8 @@ import { FriendStatus } from '@prisma/client';
 import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import AddFriendBtn from '../../../components/AddFriendBtn';
+import CancelRequestBtn from '../../../components/CancelRequestBtn';
 import ItemCard from '../../../components/ItemCard';
 import AppLayout from '../../../components/layouts/mainApp/AppLayout';
 import { api } from '../../../utils/api';
@@ -12,15 +14,12 @@ const UserProfile: NextPageWithLayout = () => {
   const { data: user, isLoading } = api.user.getProfile.useQuery(
     query.id as string
   );
-  const { data: friendStatus } = api.user.getFriendRelation.useQuery(
-    query.id as string
-  );
+  const { data: friendStatus, refetch: refetchStatus } =
+    api.user.getFriendRelation.useQuery(query.id as string);
 
   if (isLoading || !user) {
     return <p>Loading...</p>;
   }
-
-  console.log(friendStatus);
 
   return (
     <article className="flex h-full flex-col space-y-6">
@@ -68,9 +67,12 @@ const UserProfile: NextPageWithLayout = () => {
         {friendStatus?.status === FriendStatus.ACCEPTED ? (
           <h2 className="text-2xl">Friends</h2>
         ) : friendStatus?.status === FriendStatus.PENDING ? (
-          <h2 className="text-2xl">Pending</h2>
+          <CancelRequestBtn
+            userId={query.id as string}
+            refetch={refetchStatus}
+          />
         ) : (
-          <h2 className="text-2xl">Not Friends</h2>
+          <AddFriendBtn userId={query.id as string} refetch={refetchStatus} />
         )}
       </section>
       <section>

@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
 
 export const friendsRouter = createTRPCRouter({
@@ -94,4 +95,31 @@ export const friendsRouter = createTRPCRouter({
       friends: arr,
     };
   }),
+  sendFriendRequest: protectedProcedure
+    .input(z.object({ requestedId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      await ctx.prisma.friend.create({
+        data: {
+          requesterId: userId,
+          requestedId: input.requestedId,
+          status: 'PENDING',
+        },
+      });
+    }),
+  cancelFriendRequest: protectedProcedure
+    .input(z.object({ requestedId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      await ctx.prisma.friend.delete({
+        where: {
+          requesterId_requestedId: {
+            requesterId: userId,
+            requestedId: input.requestedId,
+          },
+        },
+      });
+    }),
 });
