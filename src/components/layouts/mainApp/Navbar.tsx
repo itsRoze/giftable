@@ -12,11 +12,9 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="drawer-mobile drawer min-h-screen w-1/6 border-r border-purple-300 bg-purple-200 shadow-[4px_1px_3px_rgba(0,0,0,0.25)]">
-      <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-      <div className="custom-scroll drawer-side overflow-y-scroll">
-        <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
-        <ul className="menu w-80 p-4 text-base-content">
+    <nav className="min-h-screen w-1/6 border-r border-purple-300 bg-purple-200 shadow-[4px_1px_3px_rgba(0,0,0,0.25)]">
+      <div className="custom-scroll overflow-y-scroll">
+        <ul className="menu p-4 text-base-content">
           <h3 className="text-lg font-semibold text-purple-500">Wishlists</h3>
           <li>
             <Link href="#">Your List</Link>

@@ -1,19 +1,25 @@
 import { FriendStatus } from '@prisma/client';
 import moment from 'moment';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import AddFriendBtn from '../../../components/AddFriendBtn';
 import CancelRequestBtn from '../../../components/CancelRequestBtn';
+import AddGiftIdeaForm from '../../../components/forms/AddGiftIdeaForm';
 import ItemCard from '../../../components/ItemCard';
 import AppLayout from '../../../components/layouts/mainApp/AppLayout';
 import { api } from '../../../utils/api';
 import { type NextPageWithLayout } from '../../_app';
 
 const UserProfile: NextPageWithLayout = () => {
+  const { data: session } = useSession();
   const { query } = useRouter();
-  const { data: user, isLoading } = api.user.getProfile.useQuery(
-    query.id as string
-  );
+  // TODO: grab user profile, wishlist, and gift ideas seperately to avoid refetching all data
+  const {
+    data: user,
+    isLoading,
+    refetch: refetchProfile,
+  } = api.user.getProfile.useQuery(query.id as string);
   const { data: friendStatus, refetch: refetchStatus } =
     api.user.getFriendRelation.useQuery(query.id as string);
 
@@ -92,6 +98,22 @@ const UserProfile: NextPageWithLayout = () => {
           <h1 className="mb-5 text-5xl text-red-400">
             Your Gift Ideas for {user.name}
           </h1>
+          <AddGiftIdeaForm
+            userId={query.id as string}
+            refetch={refetchProfile}
+          />
+
+          <div className="divider"></div>
+
+          <ul className="py-2">
+            {user.friendsGiftIdeas
+              .filter((idea) => idea.giftFromUserId === session?.user.id)
+              .map((item) => (
+                <li key={item.id}>
+                  <ItemCard title={item.name} url={item.url} />
+                </li>
+              ))}
+          </ul>
         </section>
       ) : null}
     </article>

@@ -58,10 +58,15 @@ model User {
     birthday               DateTime
     userId                 String?
     friends                Friend[]       @relation("Friendship")
+    // Friend Requests user has sent
     sentFriendRequests     Friend[]       @relation("SentFriendRequest")
+    // Friend Requests user has received
     receivedFriendRequests Friend[]       @relation("ReceivedFriendRequest")
+    // User's personal wishlist for themselves
     wishlist               WishlistItem[]
+    // User's gift ideas to their friends
     myGiftIdeas            GiftIdea[]     @relation("GiftIdeaFromUser")
+    // User's gift ideas from their friends
     friendsGiftIdeas       GiftIdea[]     @relation("GiftIdeaToUser")
     pronouns               String?
 }

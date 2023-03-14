@@ -10,7 +10,7 @@ export const userRouter = createTRPCRouter({
       },
       include: {
         wishlist: true,
-        myGiftIdeas: true,
+        friendsGiftIdeas: true,
       },
     });
   }),
