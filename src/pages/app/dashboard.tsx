@@ -1,4 +1,5 @@
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import BirthdayCard from '../../components/BirthdayCard';
 import NewItemForm from '../../components/forms/NewItemForm';
 import ItemCard from '../../components/ItemCard';
@@ -12,6 +13,7 @@ const Dashboard: NextPageWithLayout = () => {
     api.wishlist.getMyItems.useQuery();
   const { data: upcomingBirthdays } =
     api.friends.getUpcomingBirthdays.useQuery();
+  const { data: friendRequests } = api.friends.getFriendRequests.useQuery();
 
   if (!session) return null;
 
@@ -22,17 +24,31 @@ const Dashboard: NextPageWithLayout = () => {
           <h1 className="mb-5 text-5xl text-green-500">
             Hey, {session.user.name}
           </h1>
-          <svg width="100" height="100" viewBox="0 0 100 100">
-            <rect width="100%" height="100%" fill="#9792e3" />
-            <circle cx="30" cy="30" r="4" fill="black" />
-            <circle cx="70" cy="30" r="4" fill="black" />
-            <path
-              d="M 30 50 Q 50 60 70 50"
-              stroke="black"
-              strokeWidth="5"
-              fill="none"
-            />
-          </svg>
+          <div className="flex">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+              <rect width="100%" height="100%" fill="#9792e3" />
+              <circle cx="30" cy="30" r="4" fill="black" />
+              <circle cx="70" cy="30" r="4" fill="black" />
+              <path
+                d="M 30 50 Q 50 60 70 50"
+                stroke="black"
+                strokeWidth="5"
+                fill="none"
+              />
+            </svg>
+            {friendRequests?.receivedFriendRequests ? (
+              <Link
+                href="/app/friendrequests"
+                className="mx-2 my-2 hover:underline"
+              >
+                {friendRequests.receivedFriendRequests.length}{' '}
+                {friendRequests.receivedFriendRequests.length > 1
+                  ? 'New Friend Requests'
+                  : 'New Friend Request'}{' '}
+                ↗️
+              </Link>
+            ) : null}
+          </div>
         </section>
         <section className="w-1/2">
           <h1 className="mb-5 text-5xl text-red-400">New Item</h1>

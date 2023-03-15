@@ -66,12 +66,16 @@ export const friendsRouter = createTRPCRouter({
 
     const friendshipData = await ctx.prisma.friend.findMany({
       where: {
-        OR: [
+        AND: [
           {
-            requestedId: userId,
+            users: {
+              some: {
+                id: userId,
+              },
+            },
           },
           {
-            requesterId: userId,
+            status: 'ACCEPTED',
           },
         ],
       },
@@ -95,16 +99,86 @@ export const friendsRouter = createTRPCRouter({
       friends: arr,
     };
   }),
+  getFriendRequests: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.user.findUnique({
+      where: { id: ctx.session.user.id },
+      select: {
+        receivedFriendRequests: {
+          where: {
+            status: 'PENDING',
+          },
+          include: {
+            requester: true,
+          },
+        },
+      },
+    });
+  }),
   sendFriendRequest: protectedProcedure
     .input(z.object({ requestedId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
-      await ctx.prisma.friend.create({
+      return await ctx.prisma.user.update({
+        where: {
+          id: userId,
+        },
         data: {
-          requesterId: userId,
-          requestedId: input.requestedId,
-          status: 'PENDING',
+          friends: {
+            create: {
+              requestedId: input.requestedId,
+              requesterId: userId,
+              status: 'PENDING',
+            },
+          },
+        },
+      });
+    }),
+  acceptFriendRequest: protectedProcedure
+    .input(z.object({ requesterId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      return await ctx.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          friends: {
+            connect: {
+              requesterId_requestedId: {
+                requesterId: input.requesterId,
+                requestedId: userId,
+              },
+            },
+            update: {
+              where: {
+                requesterId_requestedId: {
+                  requesterId: input.requesterId,
+                  requestedId: userId,
+                },
+              },
+              data: {
+                requesterId: input.requesterId,
+                requestedId: userId,
+                status: 'ACCEPTED',
+              },
+            },
+          },
+        },
+      });
+    }),
+  declineFriendRequest: protectedProcedure
+    .input(z.object({ requesterId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      return await ctx.prisma.friend.delete({
+        where: {
+          requesterId_requestedId: {
+            requesterId: input.requesterId,
+            requestedId: userId,
+          },
         },
       });
     }),
@@ -113,7 +187,7 @@ export const friendsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
-      await ctx.prisma.friend.delete({
+      return await ctx.prisma.friend.delete({
         where: {
           requesterId_requestedId: {
             requesterId: userId,
