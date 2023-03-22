@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import AddFriendBtn from '../../../components/AddFriendBtn';
 import CancelRequestBtn from '../../../components/CancelRequestBtn';
 import AddGiftIdeaForm from '../../../components/forms/AddGiftIdeaForm';
+import FriendRequestHandleBtn from '../../../components/FriendRequestHandleBtn';
 import HomeBtn from '../../../components/HomeBtn';
 import ItemCard from '../../../components/ItemCard';
 import AppLayout from '../../../components/layouts/mainApp/AppLayout';
@@ -26,6 +27,36 @@ const UserProfile: NextPageWithLayout = () => {
   if (isLoading || !user) {
     return <p>Loading...</p>;
   }
+
+  const friendStatusUI = () => {
+    if (!friendStatus) {
+      return null;
+    }
+    switch (friendStatus?.status) {
+      case FriendStatus.ACCEPTED:
+        return <h2 className="text-2xl">Friends</h2>;
+      case FriendStatus.PENDING:
+        return (
+          <>
+            {friendStatus?.requestedId === query.id ? (
+              <CancelRequestBtn
+                userId={query.id as string}
+                refetch={refetchStatus}
+              />
+            ) : (
+              <FriendRequestHandleBtn
+                requesterId={friendStatus.requesterId as string}
+                refetch={refetchStatus}
+              />
+            )}
+          </>
+        );
+      default:
+        return (
+          <AddFriendBtn userId={query.id as string} refetch={refetchStatus} />
+        );
+    }
+  };
 
   return (
     <article className="flex h-full flex-col space-y-6">
@@ -52,16 +83,7 @@ const UserProfile: NextPageWithLayout = () => {
             fill="none"
           />
         </svg>
-        {friendStatus?.status === FriendStatus.ACCEPTED ? (
-          <h2 className="text-2xl">Friends</h2>
-        ) : friendStatus?.status === FriendStatus.PENDING ? (
-          <CancelRequestBtn
-            userId={query.id as string}
-            refetch={refetchStatus}
-          />
-        ) : (
-          <AddFriendBtn userId={query.id as string} refetch={refetchStatus} />
-        )}
+        {friendStatusUI()}
       </section>
       <section>
         <h1 className="mb-5 text-5xl text-red-400">

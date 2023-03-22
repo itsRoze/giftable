@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { api } from '../../../utils/api';
+import NavSettings from '../../NavSettings';
 
 const Navbar = () => {
   const friendsQuery = api.friends.getFriends.useQuery();
@@ -12,8 +13,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="min-h-screen w-1/6 border-r border-purple-300 bg-purple-200 shadow-[4px_1px_3px_rgba(0,0,0,0.25)]">
-      <div className="custom-scroll overflow-y-scroll">
+    <nav className="flex min-h-screen w-1/6 flex-col border-r border-purple-300 bg-purple-200 shadow-[4px_1px_3px_rgba(0,0,0,0.25)]">
+      <div className="custom-scroll flex-grow overflow-y-scroll">
         <ul className="menu p-4 text-base-content">
           <h3 className="text-lg font-semibold text-purple-500">Wishlists</h3>
           <li>
@@ -64,6 +65,7 @@ const Navbar = () => {
           )}
         </ul>
       </div>
+      <NavSettings />
     </nav>
   );
 };

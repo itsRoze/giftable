@@ -35,6 +35,8 @@ export const userRouter = createTRPCRouter({
 
       return {
         status: friendshipData?.status,
+        requestedId: friendshipData?.requestedId,
+        requesterId: friendshipData?.requesterId,
       };
     }),
   findUsers: protectedProcedure

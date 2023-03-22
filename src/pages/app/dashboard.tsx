@@ -36,7 +36,8 @@ const Dashboard: NextPageWithLayout = () => {
                 fill="none"
               />
             </svg>
-            {friendRequests?.receivedFriendRequests ? (
+            {friendRequests?.receivedFriendRequests &&
+            friendRequests?.receivedFriendRequests.length > 0 ? (
               <Link
                 href="/app/friendrequests"
                 className="mx-2 my-2 hover:underline"

@@ -36,15 +36,6 @@ const BirthdayCard: React.FC<BirthdayItem> = ({ userId, birthday, name }) => {
         >
           View Wishlist ↗️
         </Link>
-        <div className="form-control">
-          <label className="label cursor-pointer">
-            <span className="label-text">Gift bought?</span>
-            <input
-              type="checkbox"
-              className="checkbox-primary checkbox border-2 border-gray-300"
-            />
-          </label>
-        </div>
       </div>
     </div>
   );
