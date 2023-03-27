@@ -1,53 +1,79 @@
-import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { type z } from 'zod';
+import { giftIdeaSchema } from '~/lib/zodSchemas/giftIdeaSchema';
 import { api } from '../../utils/api';
 
+type Inputs = z.infer<typeof giftIdeaSchema>;
 interface Props {
   userId: string;
   refetch: () => void;
 }
 
 const AddGiftIdeaForm: React.FC<Props> = ({ refetch, userId }) => {
-  const giftMutation = api.giftIdeas.addGiftForUser.useMutation({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Inputs>({
+    defaultValues: {
+      name: '',
+      url: '',
+    },
+    resolver: zodResolver(giftIdeaSchema),
+  });
+  const { mutate, isLoading } = api.giftIdeas.addGiftForUser.useMutation({
     onSuccess: () => {
       refetch();
-      console.log('added gift');
+      reset();
     },
     onError: (err) => {
       console.log(err);
     },
   });
-  const [name, setName] = useState('');
-  const [url, setUrl] = useState('');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    giftMutation.mutate({ userId, giftName: name, giftUrl: url });
-
-    setName('');
-    setUrl('');
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    mutate({ giftToUserId: userId, name: data.name, url: data.url });
   };
 
   return (
-    <form className="flex w-1/2 items-center" onSubmit={handleSubmit}>
-      <div className="grid w-1/2 grid-cols-4 items-center gap-x-1 gap-y-2">
+    <form className="flex w-1/2 items-center" onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex flex-col">
         {/* Name */}
-        <label className="font-medium text-indigo-400">Name</label>
-        <input
-          type="text"
-          placeholder="e.g. Raincoat"
-          onChange={(e) => setName(e.target.value)}
-          className="input-bordered input col-span-3 w-full max-w-xs bg-white"
-        />
+        <div className="flex items-center">
+          <label className="w-16 font-medium text-indigo-400">Name</label>
+          <input
+            {...register('name', {
+              required: true,
+              pattern: {
+                value: /^[^\s]+(\s+[^\s]+)*$/,
+                message: 'Name should not be empty',
+              },
+            })}
+            aria-invalid={errors.name ? 'true' : 'false'}
+            placeholder="e.g. Raincoat"
+            className="input-bordered input w-full max-w-xs bg-white"
+          />
+        </div>
+        {errors.name && (
+          <p className="mb-2 text-left text-red-400" role="alert">
+            {errors.name.message}
+          </p>
+        )}
         {/* Url */}
-        <label className="font-medium text-indigo-400">Url</label>
-        <input
-          type="url"
-          placeholder="www.example.com"
-          onChange={(e) => setUrl(e.target.value)}
-          className="input-bordered input col-span-3 w-full max-w-xs bg-white"
-        />
+        <div className="flex items-center">
+          <label className="w-16 font-medium text-indigo-400">Url</label>
+          <input
+            {...register('url')}
+            type="url"
+            placeholder="www.example.com"
+            className="input-bordered input w-full max-w-xs bg-white"
+          />
+        </div>
       </div>
       <button
+        disabled={isLoading}
         type="submit"
         className="btn-circle btn ml-10 h-16 w-16 border-indigo-400 bg-indigo-400 hover:border-indigo-300 hover:bg-indigo-300"
       >

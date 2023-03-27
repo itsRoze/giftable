@@ -168,6 +168,11 @@
   resolved "https://registry.yarnpkg.com/@heroicons/react/-/react-2.0.16.tgz#562883c19ba2690c83380b42a9a5cce39dcbdb4a"
   integrity sha512-x89rFxH3SRdYaA+JCXwfe+RkE1SFTo9GcOkZettHer71Y3T7V+ogKmfw5CjTazgS3d0ClJ7p1NA+SP7VQLQcLw==
 
+"@hookform/resolvers@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-3.0.0.tgz#bb9346f1550a472a980af5b08e549366c788ff76"
+  integrity sha512-SQPefakODpyq25b/phHXDKCdRrEfPcCXV7B4nAa139wE1DxufYbbNAjeo0T04ZXBokRxZ+wD8iA1kkVMa3QwjQ==
+
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.8.tgz#03595ac2075a4dc0f191cc2131de14fbd7d410b9"
@@ -379,10 +384,10 @@
   resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-10.13.0.tgz#ca5a1da0ea126976d7435775f2ba1846cb7fad59"
   integrity sha512-y4jbojrDFdEl1KBejBoMWIofcUXDHQA8wf01eKMEDV7Jwc7lhq6R1dxYtKzeF+s5wqfnPWFOGZDmB3flzv07Dw==
 
-"@trpc/server@^10.9.0":
-  version "10.13.0"
-  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-10.13.0.tgz#0945b5210a18934c2284c8679cb6692ecb5b054c"
-  integrity sha512-d/bu6utCC4ALxhTJkolEPAHMOSuCAu3mG79TZswa6wD2ob0/Z3AIvBF/meeSTqDxe4tvXY78lQqOkQI81dgi/g==
+"@trpc/server@^10.18.0":
+  version "10.18.0"
+  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-10.18.0.tgz#3e3de21d4f66e86a20a5175a0d193d687d75a17c"
+  integrity sha512-nVMqdDIF9YLOeC3g6RdAvdCPqkHFjpshSqZGThZ+fyjiWSUXj2ZKCduhJFnY77TjtgODojeaaghmzcnjxb+Onw==
 
 "@types/eslint@^8.21.1":
   version "8.21.1"
@@ -2449,6 +2454,11 @@ react-dom@18.2.0:
   dependencies:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
+
+react-hook-form@^7.43.8:
+  version "7.43.8"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.43.8.tgz#189fe4fb31e15c280b529cc3041249ed12108d75"
+  integrity sha512-BQm+Ge5KjTk1EchDBRhdP8Pkb7MArO2jFF+UWYr3rtvh6197khi22uloLqlWeuY02ItlCzPunPsFt1/q9wQKnw==
 
 react-is@^16.13.1:
   version "16.13.1"

@@ -90,20 +90,20 @@ enum FriendStatus {
 }
 
 model WishlistItem {
-    id     Int    @id @default(autoincrement())
+    id     Int     @id @default(autoincrement())
     name   String
-    url    String
+    url    String?
     userId String
-    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model GiftIdea {
-    id             Int    @id @default(autoincrement())
+    id             Int     @id @default(autoincrement())
     name           String
-    url            String
-    giftFromUser   User   @relation("GiftIdeaFromUser", fields: [giftFromUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    url            String?
+    giftFromUser   User    @relation("GiftIdeaFromUser", fields: [giftFromUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     giftFromUserId String
-    giftToUser     User   @relation("GiftIdeaToUser", fields: [giftToUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    giftToUser     User    @relation("GiftIdeaToUser", fields: [giftToUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     giftToUserId   String
 }
 

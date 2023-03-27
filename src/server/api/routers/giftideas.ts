@@ -1,16 +1,10 @@
-import { z } from 'zod';
+import { giftIdeaSchema } from '~/lib/zodSchemas/giftIdeaSchema';
 
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
 
 export const giftIdeasRouter = createTRPCRouter({
   addGiftForUser: protectedProcedure
-    .input(
-      z.object({
-        userId: z.string(),
-        giftName: z.string(),
-        giftUrl: z.string(),
-      })
-    )
+    .input(giftIdeaSchema)
     .mutation(({ ctx, input }) => {
       return ctx.prisma.user.update({
         where: {
@@ -19,9 +13,9 @@ export const giftIdeasRouter = createTRPCRouter({
         data: {
           myGiftIdeas: {
             create: {
-              name: input.giftName,
-              url: input.giftUrl,
-              giftToUserId: input.userId,
+              name: input.name,
+              url: input.url,
+              giftToUserId: input.giftToUserId,
             },
           },
         },
