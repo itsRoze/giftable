@@ -5,7 +5,7 @@ import { api } from '../../utils/api';
 import { type NextPageWithLayout } from '../_app';
 
 const GiftIdeas: NextPageWithLayout = () => {
-  const { data: giftIdeas } = api.giftIdeas.getMyGiftIdeas.useQuery();
+  const { data: giftIdeas } = api.user.getGiftIdeasForCurrentUser.useQuery();
   const { data: friends } = api.friends.getFriends.useQuery();
 
   const renderGiftIdeas = (friendId: string) => {

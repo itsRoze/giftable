@@ -121,3 +121,7 @@ export type Friend = {
   id: number;
   name: string;
 };
+
+export function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
+}

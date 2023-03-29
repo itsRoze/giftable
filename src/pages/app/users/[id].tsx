@@ -1,6 +1,5 @@
 import { FriendStatus } from '@prisma/client';
 import moment from 'moment';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import AddFriendBtn from '../../../components/AddFriendBtn';
 import CancelRequestBtn from '../../../components/CancelRequestBtn';
@@ -13,7 +12,6 @@ import { api } from '../../../utils/api';
 import { type NextPageWithLayout } from '../../_app';
 
 const UserProfile: NextPageWithLayout = () => {
-  const { data: session } = useSession();
   const { query } = useRouter();
   // TODO: grab user profile, wishlist, and gift ideas seperately to avoid refetching all data
   const {
@@ -110,13 +108,11 @@ const UserProfile: NextPageWithLayout = () => {
           <div className="divider"></div>
 
           <ul className="py-2">
-            {user.friendsGiftIdeas
-              .filter((idea) => idea.giftFromUserId === session?.user.id)
-              .map((item) => (
-                <li key={item.id}>
-                  <ItemCard item={item} />
-                </li>
-              ))}
+            {user.friendsGiftIdeas.map((item) => (
+              <li key={item.id}>
+                <ItemCard item={item} />
+              </li>
+            ))}
           </ul>
         </section>
       ) : null}

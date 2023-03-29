@@ -1,5 +1,7 @@
-import { useSession } from 'next-auth/react';
+import { type GetStaticProps } from 'next';
 import Link from 'next/link';
+import { LoadingPage } from '~/components/Loading';
+import { generateSSGHelper } from '~/server/helpers/ssgHelper';
 import BirthdayCard from '../../components/BirthdayCard';
 import NewItemForm from '../../components/forms/NewItemForm';
 import ItemCard from '../../components/ItemCard';
@@ -8,22 +10,19 @@ import { api } from '../../utils/api';
 import { type NextPageWithLayout } from '../_app';
 
 const Dashboard: NextPageWithLayout = () => {
-  const { data: session } = useSession();
-  const { data: wishlistItems, refetch: refetchWishlist } =
-    api.wishlist.getMyItems.useQuery();
+  const { data: user, isLoading: userIsLoading } =
+    api.user.getProfileForCurrentUser.useQuery();
   const { data: upcomingBirthdays } =
     api.friends.getUpcomingBirthdays.useQuery();
-  const { data: friendRequests } = api.friends.getFriendRequests.useQuery();
 
-  if (!session) return null;
+  if (userIsLoading) return <LoadingPage />;
+  if (!user) return <div>404</div>;
 
   return (
     <article className="flex h-full flex-col space-y-6">
       <div className="flex justify-between">
         <section className="w-1/2">
-          <h1 className="mb-5 text-5xl text-green-500">
-            Hey, {session.user.name}
-          </h1>
+          <h1 className="mb-5 text-5xl text-green-500">Hey, {user.name}</h1>
           <div className="flex">
             <svg width="100" height="100" viewBox="0 0 100 100">
               <rect width="100%" height="100%" fill="#9792e3" />
@@ -36,14 +35,14 @@ const Dashboard: NextPageWithLayout = () => {
                 fill="none"
               />
             </svg>
-            {friendRequests?.receivedFriendRequests &&
-            friendRequests?.receivedFriendRequests.length > 0 ? (
+            {user.receivedFriendRequests &&
+            user.receivedFriendRequests.length > 0 ? (
               <Link
                 href="/app/friendrequests"
                 className="mx-2 my-2 hover:underline"
               >
-                {friendRequests.receivedFriendRequests.length}{' '}
-                {friendRequests.receivedFriendRequests.length > 1
+                {user.receivedFriendRequests.length}{' '}
+                {user.receivedFriendRequests.length > 1
                   ? 'New Friend Requests'
                   : 'New Friend Request'}{' '}
                 ↗️
@@ -53,13 +52,13 @@ const Dashboard: NextPageWithLayout = () => {
         </section>
         <section className="w-1/2">
           <h1 className="mb-5 text-5xl text-red-400">New Item</h1>
-          <NewItemForm refetch={refetchWishlist} />
+          <NewItemForm />
         </section>
       </div>
       <section className="">
         <h1 className="mb-5 text-5xl text-red-400">Wishlist Items</h1>
         <ul className="grid w-9/12 grid-cols-3 gap-y-4">
-          {wishlistItems?.items.map((item) => (
+          {user.wishlist.map((item) => (
             <li key={item.id}>
               <ItemCard item={item} />
             </li>
@@ -88,4 +87,15 @@ export default Dashboard;
 
 Dashboard.getLayout = (page) => {
   return <AppLayout>{page}</AppLayout>;
+};
+
+export const getStaticProps: GetStaticProps = async () => {
+  const ssg = generateSSGHelper();
+
+  await ssg.user.getProfileForCurrentUser.prefetch();
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  };
 };

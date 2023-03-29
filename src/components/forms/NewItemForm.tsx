@@ -2,15 +2,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { type z } from 'zod';
+import { LoadingSpinner } from '~/components/Loading';
+import { classNames } from '~/lib/helpers';
 import { wishlistItemSchema } from '~/lib/schemas/wishlistItemSchema';
 import { api } from '../../utils/api';
 
 type Inputs = z.infer<typeof wishlistItemSchema>;
-interface Props {
-  refetch: () => void;
-}
 
-const NewItemForm: React.FC<Props> = ({ refetch }) => {
+const NewItemForm: React.FC = () => {
   const {
     register,
     handleSubmit,
@@ -24,15 +23,17 @@ const NewItemForm: React.FC<Props> = ({ refetch }) => {
     resolver: zodResolver(wishlistItemSchema),
   });
 
-  const { mutate, isLoading } = api.wishlist.createItem.useMutation({
-    onSuccess: () => {
-      refetch();
-      reset();
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
+  const ctx = api.useContext();
+  const { mutate, isLoading } =
+    api.user.addToWishlistForCurrentUser.useMutation({
+      onSuccess: () => {
+        void ctx.user.invalidate();
+        reset();
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log('SUBMITED');
@@ -79,10 +80,18 @@ const NewItemForm: React.FC<Props> = ({ refetch }) => {
           </p>
         )}
       </div>
+      {isLoading && (
+        <div className="ml-10">
+          <LoadingSpinner size={48} />
+        </div>
+      )}
       <button
         disabled={isLoading || !isValid}
         type="submit"
-        className="btn-circle btn ml-10 h-16 w-16 border-indigo-400 bg-indigo-400 hover:border-indigo-300 hover:bg-indigo-300"
+        className={classNames(
+          'btn-circle btn ml-10 h-16 w-16 border-indigo-400 bg-indigo-400 hover:border-indigo-300 hover:bg-indigo-300',
+          isLoading ? 'hidden' : ''
+        )}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
