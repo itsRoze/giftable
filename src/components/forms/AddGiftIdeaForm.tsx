@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { type z } from 'zod';
-import { giftIdeaSchema } from '~/lib/zodSchemas/giftIdeaSchema';
+import { giftIdeaSchema } from '~/lib/schemas/giftIdeaSchema';
 import { api } from '../../utils/api';
 
 type Inputs = z.infer<typeof giftIdeaSchema>;
@@ -15,11 +15,12 @@ const AddGiftIdeaForm: React.FC<Props> = ({ refetch, userId }) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<Inputs>({
     defaultValues: {
       name: '',
-      url: '',
+      url: undefined,
+      giftToUserId: userId,
     },
     resolver: zodResolver(giftIdeaSchema),
   });
@@ -39,7 +40,7 @@ const AddGiftIdeaForm: React.FC<Props> = ({ refetch, userId }) => {
 
   return (
     <form className="flex w-1/2 items-center" onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-y-2">
         {/* Name */}
         <div className="flex items-center">
           <label className="w-16 font-medium text-indigo-400">Name</label>
@@ -65,15 +66,20 @@ const AddGiftIdeaForm: React.FC<Props> = ({ refetch, userId }) => {
         <div className="flex items-center">
           <label className="w-16 font-medium text-indigo-400">Url</label>
           <input
-            {...register('url')}
+            {...(register('url'), { required: false })}
             type="url"
             placeholder="www.example.com"
             className="input-bordered input w-full max-w-xs bg-white"
           />
         </div>
+        {errors.url && (
+          <p className="mb-2 text-left text-red-400" role="alert">
+            {errors.url.message}
+          </p>
+        )}
       </div>
       <button
-        disabled={isLoading}
+        disabled={isLoading || !isValid}
         type="submit"
         className="btn-circle btn ml-10 h-16 w-16 border-indigo-400 bg-indigo-400 hover:border-indigo-300 hover:bg-indigo-300"
       >

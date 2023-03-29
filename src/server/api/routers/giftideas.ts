@@ -1,4 +1,4 @@
-import { giftIdeaSchema } from '~/lib/zodSchemas/giftIdeaSchema';
+import { giftIdeaSchema } from '~/lib/schemas/giftIdeaSchema';
 
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
 

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { wishlistItemSchema } from '~/lib/schemas/wishlistItemSchema';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
 
 export const wishlistRouter = createTRPCRouter({
@@ -19,12 +19,7 @@ export const wishlistRouter = createTRPCRouter({
     };
   }),
   createItem: protectedProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        url: z.string(),
-      })
-    )
+    .input(wishlistItemSchema)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
