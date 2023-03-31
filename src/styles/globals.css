@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-indigo-50;
+  overscroll-behavior: none;
 }
 
 /* width */

@@ -2,10 +2,10 @@
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    backgroundImage: {
-      'check': 'url(/images/check.svg)',
+    extend: {
+      backgroundImage: {
+        check: 'url(/images/check.svg)',
+      },
     },
-    extend: {},
   },
-  plugins: [require('daisyui')],
 };
