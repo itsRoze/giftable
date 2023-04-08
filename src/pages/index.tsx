@@ -2,7 +2,36 @@ import { type GetServerSideProps, type NextPage } from 'next';
 import Head from 'next/head';
 import { getServerAuthSession } from '../server/auth';
 
+import Image from 'next/image';
 import Navbar from '~/components/SiteNav';
+
+const Icons = () => {
+  return (
+    <div className="relative h-full max-h-80 w-full max-w-lg">
+      <Image
+        src="/images/icons/heart-icon.png"
+        width={77}
+        height={77}
+        alt="Heart icon"
+        className="absolute top-0 left-0"
+      />
+      <Image
+        src="/images/icons/cake-icon.png"
+        width={77}
+        height={77}
+        alt="Cake icon"
+        className="absolute top-1/3 left-2/3"
+      />
+      <Image
+        src="/images/icons/plus-icon.png"
+        width={77}
+        height={77}
+        alt="Plus icon"
+        className="absolute top-2/3 left-1/4"
+      />
+    </div>
+  );
+};
 
 const Home: NextPage = () => {
   return (
@@ -15,22 +44,34 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen flex-col bg-gradient-to-t from-red-200 to-purple-400">
         <article className="mx-3 mt-3 flex-grow rounded-tl-3xl rounded-tr-3xl bg-gradient-to-b from-red-100 to-slate-50 py-5 px-5 shadow-2xl shadow-black md:mx-20 md:mt-20 md:px-20">
           <Navbar />
-          <section className="w-1/2">
-            <div className="w-fit rounded-lg bg-orange-200 p-2">
+          <div className="w-full">
+            <section className="w-fit rounded-lg bg-orange-200 p-2">
               <h2 className="font-semibold text-orange-500">
                 🎂 the ultimate birthday reminder
               </h2>
+            </section>
+            <div className="flex flex-col  justify-between lg:flex-row">
+              <section className="w-full lg:w-2/3 xl:w-1/2">
+                <h1 className="text-7xl font-medium xl:text-8xl">
+                  Give the <span className="text-cyan-700">perfect</span> gift,
+                  every time ✨
+                </h1>
+                <div className="flex w-full justify-center lg:hidden">
+                  <div className="h-48 w-1/2 ">
+                    <Icons />
+                  </div>
+                </div>
+                <ul className="mt-4 space-y-4 text-2xl font-light">
+                  <li>Organize gift ideas for your friends and family. </li>
+                  <li>Save a wishlist for yourself. </li>
+                  <li>Never forget a special occasion again</li>
+                </ul>
+              </section>
+              <section className="hidden w-1/3 lg:block">
+                <Icons />
+              </section>
             </div>
-            <h1 className=" text-8xl font-medium">
-              Give the <span className="text-cyan-700">perfect</span> gift,
-              every time ✨
-            </h1>
-            <ul className="mt-4 space-y-4 text-2xl font-light">
-              <li>Organize gift ideas for your friends and family. </li>
-              <li>Save a wishlist for yourself. </li>
-              <li>Never forget a special occasion again</li>
-            </ul>
-          </section>
+          </div>
         </article>
       </main>
     </>
