@@ -40,7 +40,7 @@ const Navbar = () => {
                             className={classNames(
                               'cursor-pointer p-1 text-base font-medium text-black md:text-lg',
                               pathname === item.href
-                                ? 'bg-emerald-300 '
+                                ? 'underline underline-offset-4'
                                 : 'hover:underline hover:underline-offset-4'
                             )}
                             aria-current={item.current ? 'page' : undefined}
@@ -96,7 +96,7 @@ const Navbar = () => {
                       className={classNames(
                         'block px-3 py-2 text-base font-extralight text-black md:text-2xl',
                         pathname === item.href
-                          ? 'bg-emerald-300 '
+                          ? 'underline underline-offset-4'
                           : 'hover:underline hover:underline-offset-4'
                       )}
                       aria-current={item.current ? 'page' : undefined}
