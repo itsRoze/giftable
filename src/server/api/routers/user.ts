@@ -146,7 +146,6 @@ export const userRouter = createTRPCRouter({
         where: {
           name: {
             contains: input,
-            mode: 'insensitive',
           },
         },
       });
