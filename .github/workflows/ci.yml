@@ -4,7 +4,11 @@ on: [push, pull_request]
 
 env:
   DATABASE_URL: 'https://fake.com'
-  NEXTAUTH_SECRET: ''
+  NEXTAUTH_SECRET: 'fakeSecret'
+  NEXTAUTH_URL: ''
+  EMAIL_SERVER: ''
+  EMAIL_PASSWORD: ''
+  EMAIL_FROM: ''
 
 jobs:
   build:
