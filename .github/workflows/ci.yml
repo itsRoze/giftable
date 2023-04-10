@@ -4,12 +4,8 @@ on: [push, pull_request]
 
 env:
   DATABASE_URL: 'https://fake.com'
-  NEXTAUTH_SECRET: 'fakeSecret'
-  NEXTAUTH_URL: 'localhost:3000'
-  EMAIL_SERVER: ''
-  EMAIL_PASSWORD: ''
-  EMAIL_FROM: ''
-
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: 'fakeKey'
+  CLERK_SECRET_KEY: 'fakeSecret'
 jobs:
   build:
     runs-on: ubuntu-latest
