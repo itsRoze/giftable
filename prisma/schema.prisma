@@ -6,12 +6,9 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
-    // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
 }
 
 model Example {
@@ -37,6 +34,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -45,6 +43,8 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model User {
@@ -81,6 +81,7 @@ model Friend {
     users       User[]       @relation("Friendship")
 
     @@unique([requesterId, requestedId])
+    @@index([requestedId])
 }
 
 enum FriendStatus {
@@ -95,6 +96,8 @@ model WishlistItem {
     url    String?
     userId String
     user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@index([userId])
 }
 
 model GiftIdea {
@@ -105,6 +108,9 @@ model GiftIdea {
     giftFromUserId String
     giftToUser     User    @relation("GiftIdeaToUser", fields: [giftToUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     giftToUserId   String
+
+    @@index([giftFromUserId])
+    @@index([giftToUserId])
 }
 
 model VerificationToken {
