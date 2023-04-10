@@ -5,7 +5,7 @@ on: [push, pull_request]
 env:
   DATABASE_URL: 'https://fake.com'
   NEXTAUTH_SECRET: 'fakeSecret'
-  NEXTAUTH_URL: ''
+  NEXTAUTH_URL: 'fakeurl.com'
   EMAIL_SERVER: ''
   EMAIL_PASSWORD: ''
   EMAIL_FROM: ''
