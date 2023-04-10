@@ -1,4 +1,4 @@
-import { Cookie } from '@next/font/google';
+import { Cookie } from "next/font/google";
 import Head from 'next/head';
 import Navbar from '~/components/layouts/website/SiteNav';
 
