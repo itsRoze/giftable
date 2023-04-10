@@ -1,5 +1,4 @@
 import { CogIcon } from '@heroicons/react/24/solid';
-import { signOut } from 'next-auth/react';
 
 const NavSettings: React.FC = () => {
   return (
@@ -12,7 +11,7 @@ const NavSettings: React.FC = () => {
         className="dropdown-content menu rounded-box w-52 bg-white p-2 shadow"
       >
         <li>
-          <button onClick={() => signOut()}>Sign out</button>
+          <button>Sign out</button>
         </li>
       </ul>
     </div>

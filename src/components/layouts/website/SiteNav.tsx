@@ -49,7 +49,7 @@ const Navbar = () => {
                           </Link>
                         ))}
                         <Link
-                          href="/"
+                          href="/signup"
                           className="m-1 rounded-lg bg-sky-900 p-2 text-sm font-medium text-white shadow-md shadow-black hover:bg-sky-800  md:text-base"
                         >
                           Get Started
@@ -106,7 +106,7 @@ const Navbar = () => {
                   ))}
                   <Disclosure.Button>
                     <Link
-                      href="/"
+                      href="/signup"
                       className="m-1 rounded-lg bg-sky-900 p-2 text-sm font-medium text-white shadow-md shadow-black hover:bg-sky-800  md:text-base"
                     >
                       Get Started

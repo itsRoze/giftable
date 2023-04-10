@@ -8,7 +8,7 @@ export const userRouter = createTRPCRouter({
   getProfileForCurrentUser: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findUnique({
       where: {
-        id: ctx.session.user.id,
+        id: ctx.userId,
       },
       select: {
         name: true,
@@ -33,7 +33,7 @@ export const userRouter = createTRPCRouter({
         wishlist: true,
         friendsGiftIdeas: {
           where: {
-            giftFromUserId: ctx.session.user.id,
+            giftFromUserId: ctx.userId,
           },
         },
       },
@@ -42,7 +42,7 @@ export const userRouter = createTRPCRouter({
   getWishlistForCurrentUser: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUnique({
       where: {
-        id: ctx.session.user.id,
+        id: ctx.userId,
       },
       select: {
         wishlist: true,
@@ -56,7 +56,7 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.user.update({
         where: {
-          id: ctx.session.user.id,
+          id: ctx.userId,
         },
         data: {
           wishlist: {
@@ -71,7 +71,7 @@ export const userRouter = createTRPCRouter({
   getGiftIdeasForCurrentUser: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findUnique({
       where: {
-        id: ctx.session.user.id,
+        id: ctx.userId,
       },
       select: {
         myGiftIdeas: true,
@@ -88,7 +88,7 @@ export const userRouter = createTRPCRouter({
         select: {
           friendsGiftIdeas: {
             where: {
-              giftFromUserId: ctx.session.user.id,
+              giftFromUserId: ctx.userId,
             },
           },
         },
@@ -99,7 +99,7 @@ export const userRouter = createTRPCRouter({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.user.update({
         where: {
-          id: ctx.session.user.id,
+          id: ctx.userId,
         },
         data: {
           myGiftIdeas: {
@@ -120,10 +120,10 @@ export const userRouter = createTRPCRouter({
           OR: [
             {
               requestedId: input,
-              requesterId: ctx.session.user.id,
+              requesterId: ctx.userId,
             },
             {
-              requestedId: ctx.session.user.id,
+              requestedId: ctx.userId,
               requesterId: input,
             },
           ],

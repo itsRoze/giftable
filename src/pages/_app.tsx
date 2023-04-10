@@ -1,5 +1,4 @@
-import { type Session } from 'next-auth';
-import { SessionProvider } from 'next-auth/react';
+import { ClerkProvider } from '@clerk/nextjs';
 import { type AppProps } from 'next/app';
 
 import { api } from '~/utils/api';
@@ -19,17 +18,13 @@ type AppPropsWithLayout = AppProps & {
 
 const MyApp = ({
   Component,
-  pageProps: { session, ...pageProps },
+  pageProps: { ...pageProps },
 }: AppPropsWithLayout) => {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
   const layout = getLayout(<Component {...pageProps} />);
 
-  return (
-    <SessionProvider session={session as Session | null}>
-      {layout}
-    </SessionProvider>
-  );
+  return <ClerkProvider {...pageProps}>{layout}</ClerkProvider>;
 };
 
 export default api.withTRPC(MyApp);
