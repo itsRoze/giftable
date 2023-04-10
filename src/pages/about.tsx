@@ -33,7 +33,7 @@ const About: NextPageWithLayout = () => {
       <section className="flex justify-center">
         <h1 className="text-7xl font-medium xl:text-8xl">About</h1>
       </section>
-      <section className="flex flex-col items-center justify-center py-4">
+      <section className="mt-8 flex flex-col items-center justify-center py-4">
         <h2 className="text-3xl font-semibold text-gray-700 md:text-4xl">
           Hello 👋🏼
         </h2>
@@ -59,11 +59,10 @@ const About: NextPageWithLayout = () => {
       </section>
       <section className="flex flex-col items-center justify-center py-2">
         <p className="mb-6 w-1/2 text-xl font-light md:text-2xl">
-          I&apos;m an indie software engineer with a passion for building
-          helpful apps that make people&apos;s lives easier. With Giftable, I
-          wanted to make a simpler way of keeping track of my friends&apos;
-          birthdays and gift ideas. I hope this app also works out for you! If
-          you&apos;d like to support me, please consider getting me a chai 😊
+          With Giftable, I wanted to make a simpler way of keeping track of my
+          friends&apos; birthdays and gift ideas. I hope this app also works out
+          for you! If you&apos;d like to support me, please consider getting me
+          a chai 😊
         </p>
         <BuyMeACoffee />
       </section>
