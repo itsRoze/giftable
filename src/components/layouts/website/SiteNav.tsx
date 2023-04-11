@@ -6,7 +6,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { classNames } from '~/lib/helpers';
 
-const navigation = [{ name: 'About', href: '/about', current: false }];
+const navigation = [
+  { name: 'About', href: '/about', current: false },
+  { name: 'Login', href: '/signin', current: false },
+];
 
 const Navbar = () => {
   const router = useRouter();

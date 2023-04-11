@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { type z } from 'zod';
 import { LoadingSpinner } from '~/components/Loading';
@@ -39,11 +38,6 @@ const NewItemForm: React.FC = () => {
     console.log('SUBMITED');
     mutate({ name: data.name, url: data.url });
   };
-
-  useEffect(() => {
-    console.log(errors);
-    console.log(isValid);
-  }, [errors, isValid]);
 
   return (
     <form className="flex items-center" onSubmit={handleSubmit(onSubmit)}>

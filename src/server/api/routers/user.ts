@@ -1,8 +1,13 @@
 import { z } from 'zod';
 import { giftIdeaSchema } from '~/lib/schemas/giftIdeaSchema';
+import { userCreateSchema } from '~/lib/schemas/userCreateSchema';
 import { wishlistItemSchema } from '~/lib/schemas/wishlistItemSchema';
 
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from '~/server/api/trpc';
 
 export const userRouter = createTRPCRouter({
   getProfileForCurrentUser: protectedProcedure.query(({ ctx }) => {
@@ -147,6 +152,34 @@ export const userRouter = createTRPCRouter({
           name: {
             contains: input,
           },
+        },
+      });
+    }),
+  create: publicProcedure
+    .input(userCreateSchema)
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.create({
+        data: {
+          name: input.name,
+          email: input.email,
+          birthday: new Date(input.birthdate),
+          pronouns: input.pronouns,
+          emailVerified: input.emailVerified,
+        },
+      });
+
+      return user;
+    }),
+  setEmailVerified: protectedProcedure
+    .input(z.object({ email: z.string().email(), emailVerified: z.date() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.user.update({
+        where: {
+          email: input.email,
+        },
+        data: {
+          emailVerified: input.emailVerified,
+          userId: ctx.userId,
         },
       });
     }),
