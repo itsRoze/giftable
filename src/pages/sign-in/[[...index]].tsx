@@ -9,7 +9,12 @@ const SignInPage: NextPageWithLayout = () => {
         <h1 className="text-7xl font-medium xl:text-8xl">Login</h1>
       </section>
       <section className="flex justify-center py-16">
-        <SignIn path="/signin" routing="path" signUpUrl="/signup" />
+        <SignIn
+          path="/sign-in"
+          routing="path"
+          signUpUrl="/sign-up"
+          redirectUrl="/app/dashboard"
+        />
       </section>
     </article>
   );

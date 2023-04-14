@@ -8,7 +8,7 @@ import { classNames } from '~/lib/helpers';
 
 const navigation = [
   { name: 'About', href: '/about', current: false },
-  { name: 'Login', href: '/signin', current: false },
+  { name: 'Login', href: '/sign-in', current: false },
 ];
 
 const Navbar = () => {
@@ -52,7 +52,7 @@ const Navbar = () => {
                           </Link>
                         ))}
                         <Link
-                          href="/signup"
+                          href="/sign-up"
                           className="m-1 rounded-lg bg-sky-900 p-2 text-sm font-medium text-white shadow-md shadow-black hover:bg-sky-800  md:text-base"
                         >
                           Get Started
@@ -109,7 +109,7 @@ const Navbar = () => {
                   ))}
                   <Disclosure.Button>
                     <Link
-                      href="/signup"
+                      href="/sign-up"
                       className="m-1 rounded-lg bg-sky-900 p-2 text-sm font-medium text-white shadow-md shadow-black hover:bg-sky-800  md:text-base"
                     >
                       Get Started

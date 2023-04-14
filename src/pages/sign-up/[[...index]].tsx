@@ -4,7 +4,6 @@ import type { ClerkAPIError } from '@clerk/types';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { type z } from 'zod';
@@ -329,8 +328,7 @@ const VerifyCodeForm: React.FC = () => {
 
 const SignUpPage: NextPageWithLayout = () => {
   const [pendingVerifcation, setPendingVerification] = useState(false);
-  const { isSignedIn, user } = useUser();
-  const router = useRouter();
+  const { isSignedIn } = useUser();
 
   if (isSignedIn) {
     console.log('SIGNED IN');

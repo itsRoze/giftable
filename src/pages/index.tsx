@@ -1,9 +1,6 @@
-import { useUser } from '@clerk/nextjs';
-
 import Image from 'next/image';
 import PrimaryLayout from '~/components/layouts/website/PrimaryLayout';
 import { type NextPageWithLayout } from '~/pages/_app';
-import Dashboard from '~/pages/app/dashboard';
 
 const Icons = () => {
   return (
@@ -34,10 +31,6 @@ const Icons = () => {
 };
 
 const Home: NextPageWithLayout = () => {
-  const { isSignedIn } = useUser();
-  if (isSignedIn) {
-    return <Dashboard />;
-  }
   return (
     <>
       <section className="w-fit rounded-lg bg-orange-200 p-2">
