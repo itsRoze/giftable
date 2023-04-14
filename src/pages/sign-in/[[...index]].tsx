@@ -13,7 +13,7 @@ const SignInPage: NextPageWithLayout = () => {
           path="/sign-in"
           routing="path"
           signUpUrl="/sign-up"
-          redirectUrl="/app/dashboard"
+          redirectUrl="/app"
         />
       </section>
     </article>

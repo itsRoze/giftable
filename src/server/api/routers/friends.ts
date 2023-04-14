@@ -1,3 +1,5 @@
+import { type User } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 import moment from 'moment';
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
@@ -60,13 +62,17 @@ export const friendsRouter = createTRPCRouter({
     };
   }),
   getFriends: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.userId)
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+
+    const friends: User[] = [];
     const friendshipData = await ctx.prisma.friend.findMany({
       where: {
         AND: [
           {
             users: {
               some: {
-                id: ctx.userId,
+                userId: ctx.userId,
               },
             },
           },
@@ -80,10 +86,11 @@ export const friendsRouter = createTRPCRouter({
       },
     });
 
-    const arr = [];
+    console.log();
+
     for (const friendship of friendshipData) {
       if (friendship.users[0] && friendship.users[1]) {
-        arr.push(
+        friends.push(
           friendship.users[0]?.id !== ctx.userId
             ? friendship.users[0]
             : friendship.users[1]
@@ -91,9 +98,7 @@ export const friendsRouter = createTRPCRouter({
       }
     }
 
-    return {
-      friends: arr,
-    };
+    return friends;
   }),
   getFriendRequests: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.user.findUnique({

@@ -183,4 +183,22 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+  getMe: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.userId) {
+      console.log('NO USERID');
+      return null;
+    }
+
+    console.log('Gonna find some more info for ', ctx.userId);
+
+    const data = await ctx.prisma.user.findUnique({
+      where: {
+        userId: ctx.userId,
+      },
+    });
+
+    console.log('Found data', data);
+
+    return ctx.userId;
+  }),
 });

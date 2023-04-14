@@ -7,22 +7,22 @@ const Icons = () => {
     <div className="relative h-full max-h-80 w-full max-w-lg">
       <Image
         src="/images/icons/heart-icon.png"
-        width={77}
-        height={77}
+        width={93}
+        height={95}
         alt="Heart icon"
         className="absolute top-0 left-0"
       />
       <Image
         src="/images/icons/cake-icon.png"
-        width={77}
-        height={77}
+        width={97}
+        height={100}
         alt="Cake icon"
         className="absolute top-1/3 left-2/3"
       />
       <Image
         src="/images/icons/plus-icon.png"
-        width={77}
-        height={77}
+        width={97}
+        height={99}
         alt="Plus icon"
         className="absolute top-2/3 left-1/4"
       />

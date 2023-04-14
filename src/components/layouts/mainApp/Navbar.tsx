@@ -1,71 +1,69 @@
+import { GiftIcon, HeartIcon, HomeIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { useState } from 'react';
-import { api } from '../../../utils/api';
-import NavSettings from '../../NavSettings';
+import { useRouter } from 'next/router';
+import { classNames } from '~/lib/helpers';
+
+const DASHBOARD = '/app/[[...index]]';
+const WISHLIST = '/app/wishlist';
+const GIFT_IDEAS = '/app/gift-ideas';
 
 const Navbar = () => {
-  const friendsQuery = api.friends.getFriends.useQuery();
+  const router = useRouter();
+  const { pathname } = router;
 
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+  const isDashboard = pathname === DASHBOARD;
+  const isWishlist = pathname === WISHLIST;
+  const isGiftIdeas = pathname === GIFT_IDEAS;
 
   return (
-    <nav className="flex min-h-screen w-1/6 flex-col border-r border-purple-300 bg-purple-200 shadow-[4px_1px_3px_rgba(0,0,0,0.25)]">
-      <div className="custom-scroll flex-grow overflow-y-scroll">
-        <ul className="menu p-4 text-base-content">
-          <h3 className="text-lg font-semibold text-purple-500">Wishlists</h3>
-          <li>
-            <Link href="/app/wishlist">Your List</Link>
-          </li>
-          <li>
-            <Link href="/app/giftideas">Gift Ideas</Link>
-          </li>
-          <h3 className="text-lg font-semibold text-purple-500">Friends</h3>
-          {friendsQuery.isLoading ? (
-            <p>Loading...</p>
-          ) : (
-            <>
-              <input
-                type="text"
-                typeof="search"
-                placeholder="Search"
-                value={searchQuery}
-                onChange={handleSearchQuery}
-                className="input-bordered input w-full max-w-xs rounded-2xl bg-white"
-              />
-              {friendsQuery.data?.friends
-                .filter((friend) => {
-                  if (searchQuery === '') return friendsQuery.data?.friends;
-                  return friend.name
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase());
-                })
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((friend) => (
-                  <li key={friend.id}>
-                    <Link href={`/app/users/${encodeURIComponent(friend.id)}`}>
-                      {friend.name}
-                    </Link>
-                  </li>
-                ))}
-              {searchQuery ? (
-                <Link
-                  className="py-5 px-2 underline"
-                  href={`/app/users?search=${encodeURIComponent(searchQuery)}`}
-                  onClick={() => setSearchQuery('')}
-                  as={`/app/users`}
-                >
-                  Search for more users ↗️
-                </Link>
-              ) : null}
-            </>
-          )}
-        </ul>
+    <nav className="flex justify-center">
+      <div className="w-fit rounded-xl bg-sky-100 py-4 px-10">
+        <div className="flex items-center gap-32">
+          <Link
+            href="#"
+            className={isDashboard ? 'rounded-xl bg-gray-500 p-2' : 'p-2'}
+          >
+            <HomeIcon
+              className={classNames(
+                'h-9 w-9',
+                isDashboard ? 'text-blue-200' : 'text-gray-500'
+              )}
+            />
+          </Link>
+          <Link
+            href="#"
+            className={
+              isWishlist
+                ? 'rounded-xl bg-gray-500 p-2'
+                : 'group rounded-xl p-2 transition-all duration-200 ease-in-out hover:bg-gray-400'
+            }
+          >
+            <HeartIcon
+              className={classNames(
+                'h-9 w-9',
+                isWishlist
+                  ? 'text-blue-200'
+                  : 'text-gray-500 group-hover:text-blue-100'
+              )}
+            />
+          </Link>
+          <Link
+            href="#"
+            className={
+              isGiftIdeas
+                ? 'rounded-xl bg-gray-500 p-2'
+                : 'group rounded-xl p-2 transition-all duration-200 ease-in-out hover:bg-gray-400'
+            }
+          >
+            <GiftIcon
+              className={classNames(
+                'h-9 w-9',
+                isGiftIdeas ? 'text-blue-200' : 'text-gray-500'
+              )}
+            />
+          </Link>
+        </div>
       </div>
-      <NavSettings />
     </nav>
   );
 };
