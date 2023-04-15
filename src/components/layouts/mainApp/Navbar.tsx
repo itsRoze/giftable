@@ -17,19 +17,19 @@ const Navbar = () => {
 
   return (
     <nav className="flex justify-center">
-      <div className="w-fit rounded-xl bg-sky-100 py-4 px-10">
-        <div className="flex items-center gap-32">
+      <div className="w-fit rounded-xl bg-sky-100 py-2 px-8">
+        <div className="flex items-center gap-12">
           <Link
             href="/app"
             className={
               isDashboard
-                ? 'rounded-xl bg-gray-500 p-2'
+                ? 'rounded-xl bg-gray-500 p-2 shadow-md'
                 : 'group rounded-xl p-2 transition-all duration-200 ease-in-out hover:bg-gray-400'
             }
           >
             <HomeIcon
               className={classNames(
-                'h-9 w-9',
+                'h-8 w-8',
                 isDashboard ? 'text-blue-200' : 'text-gray-500'
               )}
             />
@@ -44,7 +44,7 @@ const Navbar = () => {
           >
             <HeartIcon
               className={classNames(
-                'h-9 w-9',
+                'h-8 w-8',
                 isWishlist
                   ? 'text-blue-200'
                   : 'text-gray-500 group-hover:text-blue-100'
@@ -61,7 +61,7 @@ const Navbar = () => {
           >
             <GiftIcon
               className={classNames(
-                'h-9 w-9',
+                'h-8 w-8',
                 isGiftIdeas ? 'text-blue-200' : 'text-gray-500'
               )}
             />

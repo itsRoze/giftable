@@ -1,8 +1,11 @@
 import { type User } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+
+dayjs.extend(isBetween);
 
 export const friendsRouter = createTRPCRouter({
   getUpcomingBirthdays: protectedProcedure.query(async ({ ctx }) => {
@@ -37,25 +40,26 @@ export const friendsRouter = createTRPCRouter({
     // Get friends whose birthday is within the next two months
     const upcomingBirthdays = arr
       .filter((friend) => {
-        const today = moment().startOf('day');
-        const twoMonthsFromToday = moment().add(2, 'months').endOf('day');
+        const today = dayjs().startOf('day');
+        const twoMonthsFromToday = dayjs().add(2, 'months').endOf('day');
 
-        const birthday = moment(friend.birthday)
+        const birthday = dayjs(friend.birthday)
           .startOf('day')
           .year(today.year());
         console.log(birthday.toString());
 
+        // use dayjs to see if birthday is between today and two months from today
         return birthday.isBetween(today, twoMonthsFromToday, 'day', '[]');
       })
       .sort((a, b) => {
-        const today = moment().startOf('day');
-        const birthdayA = moment(a.birthday).startOf('day').year(today.year());
-        const birthdayB = moment(b.birthday).startOf('day').year(today.year());
+        const today = dayjs().startOf('day');
+        const birthdayA = dayjs(a.birthday).startOf('day').year(today.year());
+        const birthdayB = dayjs(b.birthday).startOf('day').year(today.year());
 
         return birthdayA.diff(birthdayB, 'days');
       });
 
-    // use moment to get difference in days and ignore years
+    // use dayjs to get difference in days and ignore years
 
     return {
       friends: upcomingBirthdays,
