@@ -5,7 +5,7 @@ import { classNames } from '~/lib/helpers';
 
 const DASHBOARD = '/app/[[...index]]';
 const WISHLIST = '/app/wishlist';
-const GIFT_IDEAS = '/app/gift-ideas';
+const GIFT_IDEAS = '/app/giftideas';
 
 const Navbar = () => {
   const router = useRouter();
@@ -20,8 +20,12 @@ const Navbar = () => {
       <div className="w-fit rounded-xl bg-sky-100 py-4 px-10">
         <div className="flex items-center gap-32">
           <Link
-            href="#"
-            className={isDashboard ? 'rounded-xl bg-gray-500 p-2' : 'p-2'}
+            href="/app"
+            className={
+              isDashboard
+                ? 'rounded-xl bg-gray-500 p-2'
+                : 'group rounded-xl p-2 transition-all duration-200 ease-in-out hover:bg-gray-400'
+            }
           >
             <HomeIcon
               className={classNames(
@@ -31,7 +35,7 @@ const Navbar = () => {
             />
           </Link>
           <Link
-            href="#"
+            href="/app/wishlist"
             className={
               isWishlist
                 ? 'rounded-xl bg-gray-500 p-2'
@@ -48,7 +52,7 @@ const Navbar = () => {
             />
           </Link>
           <Link
-            href="#"
+            href="/app/giftideas"
             className={
               isGiftIdeas
                 ? 'rounded-xl bg-gray-500 p-2'

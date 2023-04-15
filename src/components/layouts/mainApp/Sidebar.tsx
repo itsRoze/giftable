@@ -41,7 +41,12 @@ const Sidebar = () => {
         ) : (
           friends.map((friend) => (
             <li key={friend.id}>
-              <Link href="#">{friend.name} </Link>
+              <Link
+                href="#"
+                className="hover:underline hover:underline-offset-4"
+              >
+                {friend.name}{' '}
+              </Link>
             </li>
           ))
         )}
