@@ -2,86 +2,90 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider     = "mysql"
-    url          = env("DATABASE_URL")
-    relationMode = "prisma"
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
-    id                     String         @id @default(cuid())
-    name                   String
-    email                  String?        @unique
-    emailVerified          DateTime?
-    createdAt              DateTime       @default(now())
-    updatedAt              DateTime       @updatedAt
-    image                  String?
-    birthday               DateTime
-    // For Cler
-    userId                 String?        @unique
-    friends                Friend[]       @relation("Friendship")
-    // Friend Requests user has sent
-    sentFriendRequests     Friend[]       @relation("SentFriendRequest")
-    // Friend Requests user has received
-    receivedFriendRequests Friend[]       @relation("ReceivedFriendRequest")
-    // User's personal wishlist for themselves
-    wishlist               WishlistItem[]
-    // User's gift ideas to their friends
-    myGiftIdeas            GiftIdea[]     @relation("GiftIdeaFromUser")
-    // User's gift ideas from their friends
-    friendsGiftIdeas       GiftIdea[]     @relation("GiftIdeaToUser")
-    pronouns               String?
+  id                     String         @id @default(cuid())
+  name                   String
+  email                  String?        @unique
+  emailVerified          DateTime?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  image                  String?
+  birthday               DateTime
+  // For Cler
+  userId                 String?        @unique
+  friends                Friend[]       @relation("Friendship")
+  // Friend Requests user has sent
+  sentFriendRequests     Friend[]       @relation("SentFriendRequest")
+  // Friend Requests user has received
+  receivedFriendRequests Friend[]       @relation("ReceivedFriendRequest")
+  // User's personal wishlist for themselves
+  wishlist               WishlistItem[]
+  // User's gift ideas to their friends
+  myGiftIdeas            GiftIdea[]     @relation("GiftIdeaFromUser")
+  // User's gift ideas from their friends
+  friendsGiftIdeas       GiftIdea[]     @relation("GiftIdeaToUser")
+  pronouns               String?
 }
 
 model Friend {
-    id          String       @id @default(cuid())
-    status      FriendStatus
-    requester   User         @relation("SentFriendRequest", fields: [requesterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    requesterId String
-    requested   User         @relation("ReceivedFriendRequest", fields: [requestedId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    requestedId String
-    users       User[]       @relation("Friendship")
+  id          String       @id @default(cuid())
+  status      FriendStatus
+  requester   User         @relation("SentFriendRequest", fields: [requesterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  requesterId String
+  requested   User         @relation("ReceivedFriendRequest", fields: [requestedId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  requestedId String
+  users       User[]       @relation("Friendship")
 
-    @@unique([requesterId, requestedId])
-    @@index([requestedId])
+  @@unique([requesterId, requestedId])
+  @@index([requestedId])
 }
 
 enum FriendStatus {
-    PENDING
-    ACCEPTED
-    REJECTED
+  PENDING
+  ACCEPTED
+  REJECTED
 }
 
 model WishlistItem {
-    id     Int     @id @default(autoincrement())
-    name   String
-    url    String?
-    userId String
-    user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id          Int     @id @default(autoincrement())
+  name        String
+  url         String?
+  imageUrl    String?
+  description String?
+  userId      String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-    @@index([userId])
+  @@index([userId])
 }
 
 model GiftIdea {
-    id             Int     @id @default(autoincrement())
-    name           String
-    url            String?
-    giftFromUser   User    @relation("GiftIdeaFromUser", fields: [giftFromUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    giftFromUserId String
-    giftToUser     User    @relation("GiftIdeaToUser", fields: [giftToUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    giftToUserId   String
+  id             Int     @id @default(autoincrement())
+  name           String
+  url            String?
+  imageUrl       String?
+  description    String?
+  giftFromUser   User    @relation("GiftIdeaFromUser", fields: [giftFromUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  giftFromUserId String
+  giftToUser     User    @relation("GiftIdeaToUser", fields: [giftToUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  giftToUserId   String
 
-    @@index([giftFromUserId])
-    @@index([giftToUserId])
+  @@index([giftFromUserId])
+  @@index([giftToUserId])
 }
 
 model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-    @@unique([identifier, token])
+  @@unique([identifier, token])
 }

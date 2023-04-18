@@ -9,7 +9,7 @@
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ['xsgames.co'],
+    domains: ['xsgames.co', 'static.nike.com'],
   },
   reactStrictMode: true,
 
