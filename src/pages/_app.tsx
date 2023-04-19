@@ -1,5 +1,6 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import { type AppProps } from 'next/app';
+import { Analytics } from '@vercel/analytics/react';
 
 import { api } from '~/utils/api';
 
@@ -24,7 +25,12 @@ const MyApp = ({
   const getLayout = Component.getLayout ?? ((page) => page);
   const layout = getLayout(<Component {...pageProps} />);
 
-  return <ClerkProvider {...pageProps}>{layout}</ClerkProvider>;
+  return (
+    <>
+      <ClerkProvider {...pageProps}>{layout}</ClerkProvider>
+      <Analytics />
+    </>
+  );
 };
 
 export default api.withTRPC(MyApp);
