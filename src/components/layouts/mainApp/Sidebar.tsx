@@ -18,7 +18,7 @@ const Sidebar = () => {
   if (!isLoading && !friends) return <div>Not found</div>;
 
   return (
-    <nav className="flex min-h-screen w-1/6 flex-col">
+    <nav className="flex h-screen w-1/6 flex-col">
       <Image
         src="/images/icons/giftable-icon.png"
         width={151}

@@ -9,7 +9,11 @@
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ['xsgames.co', 'static.nike.com'],
+    remotePatterns: [
+      {
+        hostname: '*',
+      },
+    ],
   },
   reactStrictMode: true,
 

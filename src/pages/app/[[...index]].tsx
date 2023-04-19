@@ -1,6 +1,10 @@
 import { PlusIcon } from '@heroicons/react/24/outline';
+import type { WishlistItem } from '@prisma/client';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import Link from 'next/link';
+import { LoadingPage } from '~/components/Loading';
+import { api } from '~/utils/api';
 import AppLayout from '../../components/layouts/mainApp/AppLayout';
 import { type NextPageWithLayout } from '../_app';
 
@@ -56,23 +60,29 @@ const UpcomingBirthdays = () => {
   );
 };
 
-const WishlistCard = () => {
+const WishlistCard = ({ item }: { item: WishlistItem }) => {
   return (
-    <div className="w-72 max-w-lg transform space-y-5 rounded-md border border-gray-200 bg-white pb-16 shadow-xl transition duration-300 ease-in-out md:hover:-translate-y-1 md:hover:scale-105 md:hover:bg-gray-100">
-      <div className="relative h-40 w-full overflow-hidden">
-        <Image
-          src="https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/94e70add-d590-4327-9b9c-c8a65b3cf541/air-max-270-womens-shoes-Pgb94t.png"
-          alt="Nike Shoes"
-          fill
-          sizes="100vw"
-          style={{
-            objectFit: 'cover',
-          }}
-        />
+    <Link
+      href={item.url ?? '#'}
+      target="_blank"
+      className="w-72 max-w-lg transform space-y-5 rounded-md border border-gray-200 bg-white pb-16 shadow-xl transition duration-300 ease-in-out md:hover:-translate-y-1 md:hover:scale-105 md:hover:bg-gray-100"
+    >
+      <div className="relative h-40 w-full rounded-t-md">
+        {item.imageUrl && (
+          <Image
+            src={item.imageUrl}
+            alt="Item image"
+            fill
+            sizes="100vw"
+            style={{
+              objectFit: 'cover',
+            }}
+          />
+        )}
       </div>
       <div className="space-y-5 px-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-2xl font-medium">Nike Shoes</h3>
+          <h3 className="text-2xl font-medium">{item.name}</h3>
           <button className="rounded-3xl p-1 hover:bg-slate-300">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -92,32 +102,45 @@ const WishlistCard = () => {
           </button>
         </div>
         <p className="leading-loose text-gray-600 line-clamp-3">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut dignissim
-          ante. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
-          dignissim ante
+          {item.description}
         </p>
       </div>
-    </div>
+    </Link>
   );
 };
 
 const Wishlist = () => {
+  const {
+    data: wishlist,
+    isLoading,
+    isError,
+  } = api.user.getWishlistForCurrentUser.useQuery();
+
+  if (isLoading) return <LoadingPage />;
+  if (isError || (!isLoading && !wishlist)) return <div>404</div>;
+
   return (
-    <section className="overflow-y-scroll">
+    <section className="flex flex-col space-y-6">
       <div className="flex items-center justify-center">
         <h1 className="flex-1 text-center text-5xl font-medium">Wishlist</h1>
         <button className="rounded-xl hover:bg-slate-300">
           <PlusIcon className="h-12 w-12 stroke-[3]" />
         </button>
       </div>
-      <WishlistCard />
+      <div className="grid grid-cols-2 gap-4 py-2 xl:grid-cols-3 2xl:grid-cols-4">
+        {[...wishlist, ...wishlist, ...wishlist].map((item) => (
+          <div key={item.id} className="flex justify-center">
+            <WishlistCard item={item} />
+          </div>
+        ))}
+      </div>
     </section>
   );
 };
 
 const Dashboard: NextPageWithLayout = () => {
   return (
-    <article className="flex h-full flex-col ">
+    <article className="flex h-full flex-col">
       <UpcomingBirthdays />
       <Wishlist />
     </article>

@@ -47,7 +47,7 @@ export const userRouter = createTRPCRouter({
   getWishlistForCurrentUser: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUnique({
       where: {
-        id: ctx.userId,
+        userId: ctx.userId,
       },
       select: {
         wishlist: true,
