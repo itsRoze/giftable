@@ -9,9 +9,9 @@ import AppLayout from '../../components/layouts/mainApp/AppLayout';
 import { type NextPageWithLayout } from '../_app';
 
 interface IProfilePicture {
-  picUrl: string;
+  picUrl: string | null;
   name: string;
-  birthday: string;
+  birthday: Date;
 }
 const ProfilePicture: React.FC<IProfilePicture> = ({
   picUrl,
@@ -20,15 +20,21 @@ const ProfilePicture: React.FC<IProfilePicture> = ({
 }) => {
   return (
     <div className="flex flex-col items-center">
-      <div className="h-fit w-fit rounded-full border-4 border-slate-400 p-1 transition-all duration-200 ease-in-out hover:border-indigo-300">
+      <Link
+        href="#"
+        className="h-fit w-fit rounded-full border-4 border-slate-400 p-1 transition-all duration-200 ease-in-out hover:border-indigo-300"
+      >
         <Image
-          src={picUrl}
+          src={
+            picUrl ??
+            'https://xsgames.co/randomusers/assets/avatars/female/68.jpg'
+          }
           alt="Profile Picture"
           width={70}
           height={70}
           className="rounded-full"
         />
-      </div>
+      </Link>
       <p className="font-medium text-gray-500">{name}</p>
       <p className="text-gray-500">🎂 {dayjs(birthday).format('MMM D')}</p>
     </div>
@@ -36,25 +42,24 @@ const ProfilePicture: React.FC<IProfilePicture> = ({
 };
 
 const UpcomingBirthdays = () => {
+  const { data, isLoading, isError } =
+    api.friends.getUpcomingBirthdays.useQuery();
+
+  if (isLoading) return <LoadingPage />;
+  if (isError || (!isLoading && !data)) return <div>404</div>;
+
   return (
     <section className="my-8 space-y-10">
       <h1 className="text-center text-5xl font-medium">Upcoming Birthdays</h1>
       <div className="flex justify-center gap-28">
-        <ProfilePicture
-          picUrl="https://xsgames.co/randomusers/assets/avatars/female/75.jpg"
-          name="Marsha"
-          birthday="05-9-1975"
-        />
-        <ProfilePicture
-          picUrl="https://xsgames.co/randomusers/assets/avatars/female/68.jpg"
-          name="Yasmine"
-          birthday="05-15-1980"
-        />
-        <ProfilePicture
-          picUrl="https://xsgames.co/randomusers/assets/avatars/male/71.jpg"
-          name="Viktor"
-          birthday="06-01-1990"
-        />
+        {data.friends.map((user) => (
+          <ProfilePicture
+            key={user.userId}
+            picUrl={user.image}
+            name={user.name}
+            birthday={user.birthday}
+          />
+        ))}
       </div>
     </section>
   );
@@ -128,7 +133,7 @@ const Wishlist = () => {
         </button>
       </div>
       <div className="grid grid-cols-2 gap-4 py-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {[...wishlist, ...wishlist, ...wishlist].map((item) => (
+        {wishlist.map((item) => (
           <div key={item.id} className="flex justify-center">
             <WishlistCard item={item} />
           </div>

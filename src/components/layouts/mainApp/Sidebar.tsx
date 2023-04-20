@@ -5,9 +5,6 @@ import { LoadingPage } from '~/components/Loading';
 import { api } from '~/utils/api';
 
 const Sidebar = () => {
-  const { user } = useUser();
-  if (user) console.log(user);
-
   const {
     data: friends,
     isLoading,

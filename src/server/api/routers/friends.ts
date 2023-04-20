@@ -10,26 +10,30 @@ dayjs.extend(isBetween);
 export const friendsRouter = createTRPCRouter({
   getUpcomingBirthdays: protectedProcedure.query(async ({ ctx }) => {
     // Get Friends
+    const friends: User[] = [];
     const friendshipData = await ctx.prisma.friend.findMany({
       where: {
-        OR: [
+        AND: [
           {
-            requestedId: ctx.userId,
+            users: {
+              some: {
+                userId: ctx.userId,
+              },
+            },
           },
           {
-            requesterId: ctx.userId,
+            status: 'ACCEPTED',
           },
         ],
       },
-      include: {
+      select: {
         users: true,
       },
     });
 
-    const arr = [];
     for (const friendship of friendshipData) {
       if (friendship.users[0] && friendship.users[1]) {
-        arr.push(
+        friends.push(
           friendship.users[0]?.id !== ctx.userId
             ? friendship.users[0]
             : friendship.users[1]
@@ -37,8 +41,10 @@ export const friendsRouter = createTRPCRouter({
       }
     }
 
+    console.log(friends);
+
     // Get friends whose birthday is within the next two months
-    const upcomingBirthdays = arr
+    const upcomingBirthdays = friends
       .filter((friend) => {
         const today = dayjs().startOf('day');
         const twoMonthsFromToday = dayjs().add(2, 'months').endOf('day');
