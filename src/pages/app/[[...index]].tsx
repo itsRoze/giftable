@@ -3,6 +3,7 @@ import type { WishlistItem } from '@prisma/client';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import Link from 'next/link';
+import NewItemForm from '~/components/forms/NewItemForm';
 import { LoadingPage } from '~/components/Loading';
 import { api } from '~/utils/api';
 import AppLayout from '../../components/layouts/mainApp/AppLayout';
@@ -128,9 +129,7 @@ const Wishlist = () => {
     <section className="flex flex-col space-y-6">
       <div className="flex items-center justify-center">
         <h1 className="flex-1 text-center text-5xl font-medium">Wishlist</h1>
-        <button className="rounded-xl hover:bg-slate-300">
-          <PlusIcon className="h-12 w-12 stroke-[3]" />
-        </button>
+        <NewItemForm />
       </div>
       <div className="grid grid-cols-2 gap-4 py-2 xl:grid-cols-3 2xl:grid-cols-4">
         {wishlist.map((item) => (
