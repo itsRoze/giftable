@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { isSupportedExtension } from '~/server/helpers/isSupportedExtension';
 
-export const wishlistItemSchema = z.object({
+export const updateWishlistItemSchema = z.object({
+  id: z.number(),
   name: z
     .string()
     .min(1)

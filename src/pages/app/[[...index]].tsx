@@ -15,6 +15,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Edit, MoreVertical, Trash2 } from 'lucide-react';
 import { useToast } from '~/components/ui/use-toast';
+import { useState } from 'react';
+import UpdateItemForm from '~/components/forms/UpdateItemForm';
 
 interface IProfilePicture {
   picUrl: string | null;
@@ -74,9 +76,10 @@ const UpcomingBirthdays = () => {
 };
 
 const WishlistPopover = ({ item }: { item: WishlistItem }) => {
+  const [openEdit, setOpenEdit] = useState(false);
   const { toast } = useToast();
   const ctx = api.useContext();
-  const { mutate } = api.wishlist.removeWishlistItem.useMutation({
+  const { mutate } = api.wishlist.remove.useMutation({
     onSuccess() {
       void ctx.user.invalidate();
       toast({
@@ -92,21 +95,24 @@ const WishlistPopover = ({ item }: { item: WishlistItem }) => {
     },
   });
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="rounded-3xl p-1 hover:bg-slate-300">
-        <button className="flex justify-center">
-          <MoreVertical className="h-5 w-5" />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem onClick={() => console.log('Edit')}>
-          <Edit className="mr-2 h-4 w-4" /> Edit
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => mutate({ itemId: item.id })}>
-          <Trash2 className="mr-2 h-4 w-4" /> Remove
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <UpdateItemForm item={item} open={openEdit} setOpen={setOpenEdit} />
+      <DropdownMenu>
+        <DropdownMenuTrigger className="rounded-3xl p-1 hover:bg-slate-300">
+          <button className="flex justify-center">
+            <MoreVertical className="h-5 w-5" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+            <Edit className="mr-2 h-4 w-4" /> Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => mutate({ itemId: item.id })}>
+            <Trash2 className="mr-2 h-4 w-4" /> Remove
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 };
 
