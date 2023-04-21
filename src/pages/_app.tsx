@@ -1,6 +1,7 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import { type AppProps } from 'next/app';
 import { Analytics } from '@vercel/analytics/react';
+import { Toaster } from '~/components/ui/toaster';
 
 import { api } from '~/utils/api';
 
@@ -29,6 +30,7 @@ const MyApp = ({
     <>
       <ClerkProvider {...pageProps}>{layout}</ClerkProvider>
       <Analytics />
+      <Toaster />
     </>
   );
 };

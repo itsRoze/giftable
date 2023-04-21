@@ -41,7 +41,6 @@ export const friendsRouter = createTRPCRouter({
       }
     }
 
-    console.log(friends);
 
     // Get friends whose birthday is within the next two months
     const upcomingBirthdays = friends
@@ -52,7 +51,6 @@ export const friendsRouter = createTRPCRouter({
         const birthday = dayjs(friend.birthday)
           .startOf('day')
           .year(today.year());
-        console.log(birthday.toString());
 
         // use dayjs to see if birthday is between today and two months from today
         return birthday.isBetween(today, twoMonthsFromToday, 'day', '[]');
@@ -96,7 +94,6 @@ export const friendsRouter = createTRPCRouter({
       },
     });
 
-    console.log();
 
     for (const friendship of friendshipData) {
       if (friendship.users[0] && friendship.users[1]) {

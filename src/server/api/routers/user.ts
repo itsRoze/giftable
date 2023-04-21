@@ -59,19 +59,27 @@ export const userRouter = createTRPCRouter({
   addToWishlistForCurrentUser: protectedProcedure
     .input(wishlistItemSchema)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.user.update({
+      const user = await ctx.prisma.user.update({
         where: {
-          id: ctx.userId,
+          userId: ctx.userId,
         },
         data: {
           wishlist: {
             create: {
               name: input.name,
+              description: input.description,
               url: input.url,
+              imageUrl: input.imageUrl,
             },
           },
         },
+        select: {
+          wishlist: true,
+        },
       });
+
+      // return last item in wishlist
+      return user.wishlist[user.wishlist.length - 1];
     }),
   getGiftIdeasForCurrentUser: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findUnique({
