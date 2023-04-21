@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { api } from '~/utils/api';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 
 type Inputs = z.infer<typeof wishlistItemSchema>;
@@ -52,14 +52,9 @@ const NewItemForm = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting },
   } = useForm<Inputs>({
     resolver: zodResolver(wishlistItemSchema),
-  });
-
-  useEffect(() => {
-    console.log(errors);
-    console.log(isValid);
   });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {

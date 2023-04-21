@@ -1,6 +1,7 @@
 import { friendsRouter } from '~/server/api/routers/friends';
 import { createTRPCRouter } from '~/server/api/trpc';
 import { userRouter } from './routers/user';
+import { wishlistRouter } from './routers/wishlist';
 
 /**
  * This is the primary router for your server.
@@ -10,6 +11,7 @@ import { userRouter } from './routers/user';
 export const appRouter = createTRPCRouter({
   friends: friendsRouter,
   user: userRouter,
+  wishlist: wishlistRouter,
 });
 
 // export type definition of API

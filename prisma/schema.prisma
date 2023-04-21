@@ -60,7 +60,7 @@ model WishlistItem {
   name        String
   url         String?
   imageUrl    String?
-  description String?
+  description String? @db.VarChar(300)
   userId      String
   user        User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 

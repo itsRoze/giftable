@@ -1,4 +1,3 @@
-import { PlusIcon } from '@heroicons/react/24/outline';
 import type { WishlistItem } from '@prisma/client';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -8,6 +7,14 @@ import { LoadingPage } from '~/components/Loading';
 import { api } from '~/utils/api';
 import AppLayout from '../../components/layouts/mainApp/AppLayout';
 import { type NextPageWithLayout } from '../_app';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Edit, MoreVertical, Trash2 } from 'lucide-react';
+import { useToast } from '~/components/ui/use-toast';
 
 interface IProfilePicture {
   picUrl: string | null;
@@ -66,6 +73,43 @@ const UpcomingBirthdays = () => {
   );
 };
 
+const WishlistPopover = ({ item }: { item: WishlistItem }) => {
+  const { toast } = useToast();
+  const ctx = api.useContext();
+  const { mutate } = api.wishlist.removeWishlistItem.useMutation({
+    onSuccess() {
+      void ctx.user.invalidate();
+      toast({
+        description: `${item.name} removed from your wishlist`,
+      });
+    },
+    onError(error) {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: error.message ?? 'Please try again',
+      });
+    },
+  });
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className="rounded-3xl p-1 hover:bg-slate-300">
+        <button className="flex justify-center">
+          <MoreVertical className="h-5 w-5" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem onClick={() => console.log('Edit')}>
+          <Edit className="mr-2 h-4 w-4" /> Edit
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => mutate({ itemId: item.id })}>
+          <Trash2 className="mr-2 h-4 w-4" /> Remove
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
 const WishlistCard = ({ item }: { item: WishlistItem }) => {
   return (
     <Link
@@ -88,24 +132,8 @@ const WishlistCard = ({ item }: { item: WishlistItem }) => {
       </div>
       <div className="space-y-5 px-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-2xl font-medium">{item.name}</h3>
-          <button className="rounded-3xl p-1 hover:bg-slate-300">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="1"></circle>
-              <circle cx="12" cy="5" r="1"></circle>
-              <circle cx="12" cy="19" r="1"></circle>
-            </svg>
-          </button>
+          <h3 className="text-xl font-medium line-clamp-1">{item.name}</h3>
+          <WishlistPopover item={item} />
         </div>
         <p className="leading-loose text-gray-600 line-clamp-3">
           {item.description}
