@@ -44,6 +44,8 @@ model Friend {
   requested   User         @relation("ReceivedFriendRequest", fields: [requestedId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   requestedId String
   users       User[]       @relation("Friendship")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@unique([requesterId, requestedId])
   @@index([requestedId])
@@ -56,27 +58,31 @@ enum FriendStatus {
 }
 
 model WishlistItem {
-  id          Int     @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   url         String?
   imageUrl    String?
-  description String? @db.VarChar(300)
+  description String?  @db.VarChar(300)
   userId      String
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([userId])
 }
 
 model GiftIdea {
-  id             Int     @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   name           String
   url            String?
   imageUrl       String?
   description    String?
-  giftFromUser   User    @relation("GiftIdeaFromUser", fields: [giftFromUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  giftFromUser   User     @relation("GiftIdeaFromUser", fields: [giftFromUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   giftFromUserId String
-  giftToUser     User    @relation("GiftIdeaToUser", fields: [giftToUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  giftToUser     User     @relation("GiftIdeaToUser", fields: [giftToUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   giftToUserId   String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([giftFromUserId])
   @@index([giftToUserId])

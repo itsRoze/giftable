@@ -50,7 +50,11 @@ export const userRouter = createTRPCRouter({
         userId: ctx.userId,
       },
       select: {
-        wishlist: true,
+        wishlist: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
       },
     });
 

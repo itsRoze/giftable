@@ -99,9 +99,7 @@ const WishlistPopover = ({ item }: { item: WishlistItem }) => {
       <UpdateItemForm item={item} open={openEdit} setOpen={setOpenEdit} />
       <DropdownMenu>
         <DropdownMenuTrigger className="rounded-3xl p-1 hover:bg-slate-300">
-          <button className="flex justify-center">
-            <MoreVertical className="h-5 w-5" />
-          </button>
+          <MoreVertical className="h-5 w-5" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={() => setOpenEdit(true)}>
