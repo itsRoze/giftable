@@ -10,6 +10,19 @@ import {
 } from '~/server/api/trpc';
 
 export const userRouter = createTRPCRouter({
+  getUserDetails: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.user.findUnique({
+        where: {
+          userId: input.userId,
+        },
+        select: {
+          name: true,
+          pronouns: true,
+        },
+      });
+    }),
   getProfileForCurrentUser: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findUnique({
       where: {

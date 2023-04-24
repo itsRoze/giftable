@@ -7,10 +7,7 @@ import { z } from 'zod';
 const server = z.object({
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(['development', 'test', 'production']),
-  CLERK_SECRET_KEY:
-    process.env.NODE_ENV === 'production'
-      ? z.string().min(1)
-      : z.string().min(1).optional(),
+  CLERK_SECRET_KEY: z.string().min(1),
 });
 
 /**
@@ -18,10 +15,7 @@ const server = z.object({
  * built with invalid env vars. To expose them to the client, prefix them with `NEXT_PUBLIC_`.
  */
 const client = z.object({
-  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
-    process.env.NODE_ENV === 'production'
-      ? z.string().min(1)
-      : z.string().min(1).optional(),
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
 });
 

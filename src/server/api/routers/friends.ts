@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { getUserAvatar } from '~/server/helpers/getUserAvater';
 
 dayjs.extend(isBetween);
 
@@ -41,9 +42,8 @@ export const friendsRouter = createTRPCRouter({
       }
     }
 
-
     // Get friends whose birthday is within the next two months
-    const upcomingBirthdays = friends
+    const filteredFriends = friends
       .filter((friend) => {
         const today = dayjs().startOf('day');
         const twoMonthsFromToday = dayjs().add(2, 'months').endOf('day');
@@ -63,10 +63,17 @@ export const friendsRouter = createTRPCRouter({
         return birthdayA.diff(birthdayB, 'days');
       });
 
-    // use dayjs to get difference in days and ignore years
-
+    // Add user avatar
+    const friendsWithAvatar = [];
+    for (const friend of filteredFriends) {
+      const avatarUrl = await getUserAvatar(friend.userId);
+      friendsWithAvatar.push({
+        ...friend,
+        avatarUrl: avatarUrl ?? '',
+      });
+    }
     return {
-      friends: upcomingBirthdays,
+      friends: friendsWithAvatar,
     };
   }),
   getFriends: protectedProcedure.query(async ({ ctx }) => {
@@ -93,7 +100,6 @@ export const friendsRouter = createTRPCRouter({
         users: true,
       },
     });
-
 
     for (const friendship of friendshipData) {
       if (friendship.users[0] && friendship.users[1]) {

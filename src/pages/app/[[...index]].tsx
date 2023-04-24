@@ -62,10 +62,13 @@ const UpcomingBirthdays = () => {
     <section className="my-8 space-y-10">
       <h1 className="text-center text-5xl font-medium">Upcoming Birthdays</h1>
       <div className="flex justify-center gap-28">
+        {data.friends.length === 0 && (
+          <p className="italic">Woah, no birthdays for two months!</p>
+        )}
         {data.friends.map((user) => (
           <ProfilePicture
             key={user.userId}
-            picUrl={user.image}
+            picUrl={user.avatarUrl}
             name={user.name}
             birthday={user.birthday}
           />

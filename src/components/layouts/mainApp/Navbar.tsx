@@ -1,7 +1,54 @@
+import { useClerk, useUser } from '@clerk/nextjs';
 import { GiftIcon, HeartIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { BellIcon, ChevronDown } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { classNames } from '~/lib/helpers';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { api } from '~/utils/api';
+
+const UserBar = () => {
+  const { signOut } = useClerk();
+  const router = useRouter();
+  const { user } = useUser();
+  if (!user) return null;
+
+  const { data: userDetails } = api.user.getUserDetails.useQuery({
+    userId: user?.id,
+  });
+  if (!userDetails) return null;
+
+  return (
+    <div className="absolute right-0 flex items-center gap-x-4">
+      <BellIcon className="h-8 w-8 text-gray-500" />
+      <Image
+        src={user.profileImageUrl}
+        alt="Profile Picture"
+        width={42}
+        height={42}
+        className="rounded-full"
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger className="flex items-center font-semibold ">
+          {userDetails.name} ({userDetails.pronouns}){' '}
+          <ChevronDown className="h-4 w-4" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => router.push('/app/settings')}>
+            Settings
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+};
 
 const DASHBOARD = '/app/[[...index]]';
 const WISHLIST = '/app/wishlist';
@@ -16,7 +63,7 @@ const Navbar = () => {
   const isGiftIdeas = pathname === GIFT_IDEAS;
 
   return (
-    <nav className="flex justify-center">
+    <nav className="relative flex items-center justify-center">
       <div className="w-fit rounded-xl bg-sky-100 py-2 px-8">
         <div className="flex items-center gap-12">
           <Link
@@ -68,6 +115,7 @@ const Navbar = () => {
           </Link>
         </div>
       </div>
+      <UserBar />
     </nav>
   );
 };

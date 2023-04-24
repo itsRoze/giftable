@@ -10,16 +10,23 @@ const randomDate = () => {
   );
 };
 
-const makeUser = (name: string) => {
+type User = {
+  name: string;
+  userId: string;
+  emailVerified: Date;
+};
+const makeUser = (user: User) => {
   // Random user pronouns
   const pronouns = ['she/her', 'he/him', 'they/them', 'ze/zir', 'any/all'];
   const randomPronouns = pronouns[Math.floor(Math.random() * pronouns.length)];
 
   return {
-    name,
+    name: user.name,
     pronouns: randomPronouns,
-    email: `${name.toLowerCase().replace(' ', '')}@gmail.com`,
+    email: `${user.name.toLowerCase().replace(' ', '')}@gmail.com`,
     birthday: randomDate(),
+    userId: user.userId,
+    emailVerified: user.emailVerified,
   };
 };
 
