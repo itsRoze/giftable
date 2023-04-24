@@ -8,6 +8,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from '~/server/api/trpc';
+import { formatUsersWithAvatars } from '~/server/helpers/formatUsersWithAvatars';
 
 export const userRouter = createTRPCRouter({
   getUserDetails: protectedProcedure
@@ -166,20 +167,20 @@ export const userRouter = createTRPCRouter({
         requesterId: friendshipData?.requesterId,
       };
     }),
-  findUsers: protectedProcedure
-    .input(z.string())
-    .query(async ({ ctx, input }) => {
-      if (!input) {
-        return [];
-      }
-      return ctx.prisma.user.findMany({
-        where: {
-          name: {
-            contains: input,
-          },
+  find: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    if (!input) {
+      return [];
+    }
+    const users = await ctx.prisma.user.findMany({
+      where: {
+        name: {
+          contains: input,
         },
-      });
-    }),
+      },
+    });
+
+    return formatUsersWithAvatars(users);
+  }),
   create: publicProcedure
     .input(userCreateSchema)
     .mutation(async ({ ctx, input }) => {
