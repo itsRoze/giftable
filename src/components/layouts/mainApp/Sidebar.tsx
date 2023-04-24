@@ -1,10 +1,12 @@
 import { SignOutButton } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import { LoadingPage } from '~/components/Loading';
 import { api } from '~/utils/api';
 
 const Sidebar = () => {
+  const [searchQuery, setSearchQuery] = useState('');
   const {
     data: friends,
     isLoading,
@@ -13,6 +15,10 @@ const Sidebar = () => {
 
   if (isError) return <div>Error</div>;
   if (!isLoading && !friends) return <div>Not found</div>;
+
+  const handleSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <nav className="flex h-screen w-1/6 flex-col">
@@ -29,6 +35,7 @@ const Sidebar = () => {
           type="text"
           typeof="search"
           placeholder="Search..."
+          onChange={handleSearchQuery}
           className="w-full rounded-2xl border-2 border-gray-300 p-2"
         />
       </div>
@@ -36,18 +43,39 @@ const Sidebar = () => {
         {isLoading ? (
           <LoadingPage />
         ) : (
-          friends.map((friend) => (
-            <li key={friend.id}>
-              <Link
-                href="#"
-                className="hover:underline hover:underline-offset-4"
-              >
-                {friend.name}{' '}
-              </Link>
-            </li>
-          ))
+          friends
+            .filter((friend) => {
+              if (searchQuery === '') return friends;
+              return friend.name
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase());
+            })
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((friend) => (
+              <li key={friend.id}>
+                <Link
+                  href="#"
+                  className="hover:underline hover:underline-offset-4"
+                >
+                  {friend.name}{' '}
+                </Link>
+              </li>
+            ))
         )}
+        {searchQuery ? (
+          <div className="">
+            <Link
+              className="my-8 underline"
+              href={`/app/users?search=${encodeURIComponent(searchQuery)}`}
+              onClick={() => setSearchQuery('')}
+              as={`/app/users`}
+            >
+              Find more users ↗️
+            </Link>
+          </div>
+        ) : null}
       </ul>
+
       <SignOutButton />
     </nav>
   );
