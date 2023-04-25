@@ -17,5 +17,6 @@ export const getUserAvatar = async (userId: string | null) => {
     return data.profile_image_url;
   } catch (error) {
     console.log(error);
+    return 'http://www.gravatar.com/avatar/?d=mp';
   }
 };

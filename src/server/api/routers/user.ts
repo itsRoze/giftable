@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { giftIdeaSchema } from '~/lib/schemas/giftIdeaSchema';
 import { userCreateSchema } from '~/lib/schemas/userCreateSchema';
@@ -9,55 +10,77 @@ import {
   publicProcedure,
 } from '~/server/api/trpc';
 import { formatUsersWithAvatars } from '~/server/helpers/formatUsersWithAvatars';
+import { getUserAvatar } from '~/server/helpers/getUserAvater';
 
 export const userRouter = createTRPCRouter({
-  getUserDetails: protectedProcedure
-    .input(z.object({ userId: z.string() }))
+  getCurrentUserDetails: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.user.findUnique({
+      where: {
+        userId: ctx.userId,
+      },
+      select: {
+        name: true,
+        pronouns: true,
+      },
+    });
+  }),
+  getProfile: protectedProcedure
+    .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.user.findUnique({
+      const user = await ctx.prisma.user.findUnique({
         where: {
-          userId: input.userId,
+          id: input.id,
         },
-        select: {
-          name: true,
-          pronouns: true,
+        include: {
+          wishlist: true,
+          friendsGiftIdeas: {
+            where: {
+              giftFromUserId: ctx.userId,
+            },
+          },
         },
       });
+
+      if (!user) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User not found',
+        });
+      }
+
+      const userWithAvatar = {
+        ...user,
+        avatarUrl: await getUserAvatar(user.userId),
+      };
+
+      if (!userWithAvatar) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to dd user avar to profile',
+        });
+      }
+
+      // filter for client
+      const {
+        avatarUrl,
+        id,
+        pronouns,
+        birthday,
+        name,
+        wishlist,
+        friendsGiftIdeas,
+      } = userWithAvatar;
+
+      return {
+        avatarUrl,
+        id,
+        pronouns,
+        birthday,
+        name,
+        wishlist,
+        friendsGiftIdeas,
+      };
     }),
-  getProfileForCurrentUser: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.user.findUnique({
-      where: {
-        id: ctx.userId,
-      },
-      select: {
-        name: true,
-        receivedFriendRequests: {
-          where: {
-            status: 'PENDING',
-          },
-        },
-        wishlist: true,
-      },
-    });
-  }),
-  getProfile: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
-    return ctx.prisma.user.findUnique({
-      where: {
-        id: input,
-      },
-      select: {
-        birthday: true,
-        pronouns: true,
-        name: true,
-        wishlist: true,
-        friendsGiftIdeas: {
-          where: {
-            giftFromUserId: ctx.userId,
-          },
-        },
-      },
-    });
-  }),
   getWishlistForCurrentUser: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUnique({
       where: {

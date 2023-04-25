@@ -5,7 +5,7 @@ export const wishlistItemSchema = z.object({
   name: z
     .string()
     .min(1)
-    .max(50, 'Name must be 50 characters or less')
+    .max(80, 'Name must be 80 characters or less')
     .transform((value) => value.trim()),
   description: z
     .string()

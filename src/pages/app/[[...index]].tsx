@@ -17,6 +17,7 @@ import { Edit, MoreVertical, Trash2 } from 'lucide-react';
 import { useToast } from '~/components/ui/use-toast';
 import { useState } from 'react';
 import UpdateItemForm from '~/components/forms/UpdateItemForm';
+import { classNames } from '~/lib/helpers';
 
 interface IProfilePicture {
   picUrl: string | null;
@@ -78,6 +79,7 @@ const UpcomingBirthdays = () => {
   );
 };
 
+// TODO: Figure out why refactoring the popover outside this file looses styling
 const WishlistPopover = ({ item }: { item: WishlistItem }) => {
   const [openEdit, setOpenEdit] = useState(false);
   const { toast } = useToast();
@@ -106,10 +108,12 @@ const WishlistPopover = ({ item }: { item: WishlistItem }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={() => setOpenEdit(true)}>
-            <Edit className="mr-2 h-4 w-4" /> Edit
+            <Edit className="mr-2 h-4 w-4" />
+            <span>Edit</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => mutate({ itemId: item.id })}>
-            <Trash2 className="mr-2 h-4 w-4" /> Remove
+            <Trash2 className="mr-2 h-4 w-4" />
+            <span>Remove</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -150,6 +154,31 @@ const WishlistCard = ({ item }: { item: WishlistItem }) => {
   );
 };
 
+const Gallery = ({ wishlist }: { wishlist: WishlistItem[] }) => {
+  const size = wishlist.length;
+
+  if (size === 0) {
+    return <p>No wishes 😭</p>;
+  }
+
+  return (
+    <div
+      className={classNames(
+        'grid gap-4 py-2',
+        size >= 4 ? 'grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4' : '',
+        size === 3 ? 'grid-cols-2 xl:grid-cols-3' : '',
+        size === 2 ? 'grid-cols-2' : ''
+      )}
+    >
+      {wishlist.map((item) => (
+        <div key={item.id} className="flex justify-center">
+          <WishlistCard item={item} />
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const Wishlist = () => {
   const {
     data: wishlist,
@@ -166,13 +195,7 @@ const Wishlist = () => {
         <h1 className="flex-1 text-center text-5xl font-medium">Wishlist</h1>
         <NewItemForm />
       </div>
-      <div className="grid grid-cols-2 gap-4 py-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {wishlist.map((item) => (
-          <div key={item.id} className="flex justify-center">
-            <WishlistCard item={item} />
-          </div>
-        ))}
-      </div>
+      <Gallery wishlist={wishlist} />
     </section>
   );
 };

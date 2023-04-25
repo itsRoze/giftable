@@ -17,12 +17,9 @@ const UserBar = () => {
   const { signOut } = useClerk();
   const router = useRouter();
   const { user } = useUser();
-  if (!user) return null;
 
-  const { data: userDetails } = api.user.getUserDetails.useQuery({
-    userId: user?.id,
-  });
-  if (!userDetails) return null;
+  const { data: userDetails } = api.user.getCurrentUserDetails.useQuery();
+  if (!userDetails || !user) return null;
 
   return (
     <div className="absolute right-0 flex items-center gap-x-4">

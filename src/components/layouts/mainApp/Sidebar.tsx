@@ -54,7 +54,7 @@ const Sidebar = () => {
             .map((friend) => (
               <li key={friend.id}>
                 <Link
-                  href="#"
+                  href={`/app/users/${encodeURIComponent(friend.id)}`}
                   className="hover:underline hover:underline-offset-4"
                 >
                   {friend.name}{' '}
