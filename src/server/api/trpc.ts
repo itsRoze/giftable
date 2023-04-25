@@ -24,17 +24,35 @@ import { prisma } from '~/server/db';
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (opts: CreateNextContextOptions) => {
+export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req } = opts;
 
   // Get the session from the server using the getServerSession wrapper function
   const session = getAuth(req);
 
-  const userId = session.userId;
+  const authId = session.userId;
+
+  if (!authId) {
+    throw new TRPCError({ code: 'NOT_FOUND', message: 'User has no Auth ID' });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      userId: authId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!user) {
+    throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+  }
 
   return {
     prisma,
-    userId,
+    authId,
+    userId: user.id,
   };
 };
 

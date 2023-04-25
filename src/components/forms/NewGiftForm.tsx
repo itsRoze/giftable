@@ -9,7 +9,6 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { type z } from 'zod';
-import { wishlistItemSchema } from '~/lib/schemas/wishlistItemSchema';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -17,48 +16,49 @@ import { Loader2 } from 'lucide-react';
 import { api } from '~/utils/api';
 import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import { giftIdeaSchema } from '~/lib/schemas/giftIdeaSchema';
 
-type Inputs = z.infer<typeof wishlistItemSchema>;
+type Inputs = z.infer<typeof giftIdeaSchema>;
 
-const NewItemForm = () => {
+const NewGiftForm = ({ giftToUserId }: { giftToUserId: string }) => {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const ctx = api.useContext();
-  const { mutate, isLoading } =
-    api.user.addToWishlistForCurrentUser.useMutation({
-      onSuccess(data) {
-        reset();
-        setOpen(false);
+  const { mutate, isLoading } = api.user.addGiftIdea.useMutation({
+    onSuccess(data) {
+      reset();
+      setOpen(false);
 
-        if (data) {
-          toast({
-            title: 'Added!',
-            description: `${data?.name} has been added to your wishlist`,
-          });
-        }
-        void ctx.user.invalidate();
-      },
-      onError(error) {
-        console.log(error.message);
+      if (data) {
         toast({
-          variant: 'destructive',
-          title: 'Uh oh! Something went wrong.',
-          description: 'Please try again',
+          title: 'Added!',
+          description: `${data?.name} has been added`,
         });
-      },
-    });
+      }
+      void ctx.user.invalidate();
+    },
+    onError(error) {
+      console.log(error.message);
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Please try again',
+      });
+    },
+  });
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<Inputs>({
-    resolver: zodResolver(wishlistItemSchema),
+    resolver: zodResolver(giftIdeaSchema),
   });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     mutate(data);
+    console.log('SUBMITTED GIFT');
   };
 
   const onChange = (isOpen: boolean) => {
@@ -66,16 +66,23 @@ const NewItemForm = () => {
     reset();
   };
 
+  console.log('VALID', isValid);
+
   return (
     <Dialog open={open} onOpenChange={onChange}>
       <DialogTrigger className="rounded-xl hover:bg-slate-200">
-        <PlusIcon className="h-12 w-12 stroke-[3]" />
+        <PlusIcon className="h-8 w-8 stroke-[3]" />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="pb-2">Add to Your Wishlist</DialogTitle>
+          <DialogTitle className="pb-2">Add a Gift Idea</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <input
+            {...register('giftToUserId')}
+            value={giftToUserId}
+            className="hidden"
+          />
           {/* Name*/}
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="name">* Name</Label>
@@ -140,6 +147,7 @@ const NewItemForm = () => {
               <p className="text-sm text-red-400">{errors.imageUrl.message}</p>
             )}
           </div>
+
           {/* Submit */}
           <Button disabled={isSubmitting || isLoading} type="submit">
             {(isSubmitting || isLoading) && (
@@ -153,4 +161,4 @@ const NewItemForm = () => {
   );
 };
 
-export default NewItemForm;
+export default NewGiftForm;

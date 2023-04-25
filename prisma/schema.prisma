@@ -76,9 +76,9 @@ model GiftIdea {
   url            String?
   imageUrl       String?
   description    String?
-  giftFromUser   User     @relation("GiftIdeaFromUser", fields: [giftFromUserId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
+  giftFromUser   User     @relation("GiftIdeaFromUser", fields: [giftFromUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   giftFromUserId String
-  giftToUser     User     @relation("GiftIdeaToUser", fields: [giftToUserId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
+  giftToUser     User     @relation("GiftIdeaToUser", fields: [giftToUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   giftToUserId   String
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

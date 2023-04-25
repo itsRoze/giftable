@@ -1,5 +1,4 @@
 import { type User } from '@prisma/client';
-import { TRPCError } from '@trpc/server';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { z } from 'zod';
@@ -18,7 +17,7 @@ export const friendsRouter = createTRPCRouter({
           {
             users: {
               some: {
-                userId: ctx.userId,
+                id: ctx.userId,
               },
             },
           },
@@ -77,9 +76,6 @@ export const friendsRouter = createTRPCRouter({
     };
   }),
   getFriends: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.userId)
-      throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
-
     const friends: User[] = [];
     const friendshipData = await ctx.prisma.friend.findMany({
       where: {
@@ -87,7 +83,7 @@ export const friendsRouter = createTRPCRouter({
           {
             users: {
               some: {
-                userId: ctx.userId,
+                id: ctx.userId,
               },
             },
           },

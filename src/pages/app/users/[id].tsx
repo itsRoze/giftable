@@ -6,6 +6,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import NewGiftForm from '~/components/forms/NewGiftForm';
 import AppLayout from '~/components/layouts/mainApp/AppLayout';
 import { LoadingPage } from '~/components/Loading';
 import { WishlistGallery } from '~/components/wishlist';
@@ -19,7 +20,7 @@ type PageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 const UserProfilePage: NextPageWithLayout<PageProps> = ({ id }) => {
   const { data: user, isLoading } = api.user.getProfile.useQuery({ id });
   if (isLoading) return <LoadingPage />;
-  if (!isLoading && !user) return <div>404</div>;
+  if (!isLoading && (!user || !user.userId)) return <div>404</div>;
 
   return (
     <article className="flex flex-col">
@@ -60,7 +61,11 @@ const UserCard: React.FC<UserProfile> = ({
   );
 };
 
-const ListMenu: React.FC<UserProfile> = ({ wishlist, friendsGiftIdeas }) => {
+const ListMenu: React.FC<UserProfile> = ({
+  id,
+  wishlist,
+  friendsGiftIdeas,
+}) => {
   const [activeTab, setActiveTab] = useState<'wishlist' | 'gifts'>('wishlist');
 
   return (
@@ -77,17 +82,22 @@ const ListMenu: React.FC<UserProfile> = ({ wishlist, friendsGiftIdeas }) => {
         >
           Wishlist
         </button>
-        <button
-          onClick={() => setActiveTab('gifts')}
-          className={classNames(
-            'text-3xl font-medium',
-            activeTab === 'gifts'
-              ? 'text-gray-700 underline underline-offset-8'
-              : 'hover:text-gray-700'
-          )}
-        >
-          Your Gift Ideas
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setActiveTab('gifts')}
+            className={classNames(
+              'text-3xl font-medium',
+              activeTab === 'gifts'
+                ? 'text-gray-700 underline underline-offset-8'
+                : 'hover:text-gray-700'
+            )}
+          >
+            <span>Your Gift Ideas</span>
+          </button>
+          <div onClick={() => setActiveTab('gifts')}>
+            <NewGiftForm giftToUserId={id} />
+          </div>
+        </div>
       </div>
       <section className="py-6">
         {activeTab === 'wishlist' ? (
