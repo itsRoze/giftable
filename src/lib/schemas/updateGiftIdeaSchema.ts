@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { isSupportedExtension } from '~/server/helpers/isSupportedExtension';
 
-export const updateWishlistItemSchema = z.object({
+export const updateGiftIdeaSchema = z.object({
   id: z.number(),
   name: z
     .string()

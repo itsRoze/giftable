@@ -1,14 +1,23 @@
-import dayjs from 'dayjs';
 import {
-  type InferGetServerSidePropsType,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import dayjs from 'dayjs';
+import { Edit, MoreVertical, Trash2 } from 'lucide-react';
+import {
   type GetServerSideProps,
+  type InferGetServerSidePropsType,
 } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import NewGiftForm from '~/components/forms/NewGiftForm';
+import UpdateGiftForm from '~/components/forms/UpdateGiftForm';
 import AppLayout from '~/components/layouts/mainApp/AppLayout';
 import { LoadingPage } from '~/components/Loading';
+import { useToast } from '~/components/ui/use-toast';
 import { WishlistGallery } from '~/components/wishlist';
 import { classNames } from '~/lib/helpers';
 import { type NextPageWithLayout } from '~/pages/_app';
@@ -110,6 +119,53 @@ const ListMenu: React.FC<UserProfile> = ({
   );
 };
 
+const GiftPopover: React.FC<{
+  giftIdea: UserProfile['friendsGiftIdeas'][number];
+}> = ({ giftIdea }) => {
+  const [openEdit, setOpenEdit] = useState(false);
+  const { toast } = useToast();
+  const ctx = api.useContext();
+  const { mutate } = api.gift.remove.useMutation({
+    onSuccess() {
+      void ctx.user.invalidate();
+      toast({
+        description: `${giftIdea.name} removed from your wishlist`,
+      });
+    },
+    onError(error) {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: error.message ?? 'Please try again',
+      });
+    },
+  });
+  return (
+    <>
+      <UpdateGiftForm
+        giftIdea={giftIdea}
+        open={openEdit}
+        setOpen={setOpenEdit}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger className="rounded-3xl p-1 hover:bg-slate-300">
+          <MoreVertical className="h-5 w-5" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => setOpenEdit(true)}>
+            <Edit className="mr-2 h-4 w-4" />
+            <span>Edit</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => mutate({ itemId: giftIdea.id })}>
+            <Trash2 className="mr-2 h-4 w-4" />
+            <span>Remove</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
+};
+
 const GiftIdea: React.FC<{
   giftIdea: UserProfile['friendsGiftIdeas'][number];
 }> = ({ giftIdea }) => {
@@ -135,6 +191,7 @@ const GiftIdea: React.FC<{
       <div className="space-y-5 px-3">
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-medium line-clamp-1">{giftIdea.name}</h3>
+          <GiftPopover giftIdea={giftIdea} />
         </div>
         <p className="leading-loose text-gray-600 line-clamp-3">
           {giftIdea.description}

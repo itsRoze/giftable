@@ -1,5 +1,6 @@
 import { friendsRouter } from '~/server/api/routers/friends';
 import { createTRPCRouter } from '~/server/api/trpc';
+import { giftRouter } from './routers/gift';
 import { userRouter } from './routers/user';
 import { wishlistRouter } from './routers/wishlist';
 
@@ -12,6 +13,7 @@ export const appRouter = createTRPCRouter({
   friends: friendsRouter,
   user: userRouter,
   wishlist: wishlistRouter,
+  gift: giftRouter,
 });
 
 // export type definition of API

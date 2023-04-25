@@ -9,27 +9,27 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { WishlistItem } from '@prisma/client';
+import type { GiftIdea } from '@prisma/client';
 import { Loader2 } from 'lucide-react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { type z } from 'zod';
-import { wishlistItemSchema } from '~/lib/schemas/wishlistItemSchema';
+import { updateGiftIdeaSchema } from '~/lib/schemas/updateGiftIdeaSchema';
 import { api } from '~/utils/api';
 
-type Inputs = z.infer<typeof wishlistItemSchema>;
+type Inputs = z.infer<typeof updateGiftIdeaSchema>;
 
-const UpdateItemForm = ({
-  item,
+const UpdateGiftForm = ({
+  giftIdea,
   open,
   setOpen,
 }: {
-  item: WishlistItem;
+  giftIdea: GiftIdea;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { toast } = useToast();
   const ctx = api.useContext();
-  const { mutate, isLoading } = api.wishlist.update.useMutation({
+  const { mutate, isLoading } = api.gift.update.useMutation({
     onSuccess(data) {
       reset();
       setOpen(false);
@@ -58,17 +58,18 @@ const UpdateItemForm = ({
     reset,
     formState: { errors, isSubmitting },
   } = useForm<Inputs>({
-    resolver: zodResolver(wishlistItemSchema),
+    resolver: zodResolver(updateGiftIdeaSchema),
     defaultValues: {
-      name: item.name,
-      description: item.description ?? '',
-      url: item.url ?? '',
-      imageUrl: item.imageUrl ?? '',
+      id: giftIdea.id,
+      name: giftIdea.name,
+      description: giftIdea.description ?? '',
+      url: giftIdea.url ?? '',
+      imageUrl: giftIdea.imageUrl ?? '',
     },
   });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    mutate({ ...data, id: item.id });
+    mutate({ ...data, id: giftIdea.id });
   };
 
   const onChange = (isOpen: boolean) => {
@@ -76,13 +77,22 @@ const UpdateItemForm = ({
     reset();
   };
 
+  console.log(errors);
+  console.log(giftIdea);
+
   return (
     <Dialog open={open} onOpenChange={onChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="pb-2">Add to Your Wishlist</DialogTitle>
+          <DialogTitle className="pb-2">Edit Gift Idea</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <input
+            {...register('id')}
+            type="number"
+            className="hidden"
+            value={giftIdea.id}
+          />
           {/* Name*/}
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="name">* Name</Label>
@@ -97,7 +107,7 @@ const UpdateItemForm = ({
               required
               type={'text'}
               id="name"
-              placeholder={item.name}
+              placeholder={giftIdea.name}
             />
             {errors.name && (
               <p className="text-sm text-red-400">{errors.name.message}</p>
@@ -112,7 +122,7 @@ const UpdateItemForm = ({
               type={'text'}
               id="description"
               placeholder={
-                item.description ??
+                giftIdea.description ??
                 'e.g. A shiny, waterproof, long coat with a hoodie'
               }
             />
@@ -130,7 +140,7 @@ const UpdateItemForm = ({
               aria-invalid={errors.url ? 'true' : 'false'}
               type={'url'}
               id="item-url"
-              placeholder={item.url ?? 'https://'}
+              placeholder={giftIdea.url ?? 'https://'}
             />
             {errors.url && (
               <p className="text-sm text-red-400">{errors.url.message}</p>
@@ -144,7 +154,7 @@ const UpdateItemForm = ({
               aria-invalid={errors.imageUrl ? 'true' : 'false'}
               type={'url'}
               id="photo-url"
-              placeholder={item.imageUrl ?? 'https://'}
+              placeholder={giftIdea.imageUrl ?? 'https://'}
             />
             {errors.imageUrl && (
               <p className="text-sm text-red-400">{errors.imageUrl.message}</p>
@@ -163,4 +173,4 @@ const UpdateItemForm = ({
   );
 };
 
-export default UpdateItemForm;
+export default UpdateGiftForm;
