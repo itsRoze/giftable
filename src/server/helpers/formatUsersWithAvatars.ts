@@ -4,7 +4,7 @@ import { getUserAvatar } from './getUserAvater';
 export const formatUsersWithAvatars = async (users: User[]) => {
   const usersWithAvatars = [];
   for (const user of users) {
-    const avatarUrl = await getUserAvatar(user.userId);
+    const avatarUrl = await getUserAvatar(user.authId);
     usersWithAvatars.push({
       ...user,
       avatarUrl: avatarUrl ?? '',

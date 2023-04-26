@@ -12,7 +12,7 @@ const randomDate = () => {
 
 type User = {
   name: string;
-  userId: string;
+  authId: string;
   emailVerified: Date;
 };
 const makeUser = (user: User) => {
@@ -25,7 +25,7 @@ const makeUser = (user: User) => {
     pronouns: randomPronouns,
     email: `${user.name.toLowerCase().replace(' ', '')}@gmail.com`,
     birthday: randomDate(),
-    userId: user.userId,
+    authId: user.authId,
     emailVerified: user.emailVerified,
   };
 };

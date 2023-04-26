@@ -38,7 +38,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 
   const user = await prisma.user.findUnique({
     where: {
-      userId: authId,
+      authId,
     },
     select: {
       id: true,
@@ -51,8 +51,10 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 
   return {
     prisma,
-    authId,
-    userId: user.id,
+    user: {
+      authId,
+      id: user.id,
+    },
   };
 };
 
@@ -104,12 +106,12 @@ export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.userId) {
+  if (!ctx.user.id) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
   return next({
     ctx: {
-      userId: ctx.userId,
+      user: ctx.user,
     },
   });
 });

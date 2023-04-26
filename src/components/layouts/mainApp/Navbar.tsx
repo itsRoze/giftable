@@ -1,3 +1,9 @@
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useClerk, useUser } from '@clerk/nextjs';
 import { GiftIcon, HeartIcon, HomeIcon } from '@heroicons/react/24/outline';
 import { BellIcon, ChevronDown } from 'lucide-react';
@@ -5,12 +11,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { classNames } from '~/lib/helpers';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { api } from '~/utils/api';
 
 const UserBar = () => {
@@ -23,7 +23,7 @@ const UserBar = () => {
 
   return (
     <div className="absolute right-0 flex items-center gap-x-4">
-      <BellIcon className="h-8 w-8 text-gray-500" />
+      <Notifications />
       <Image
         src={user.profileImageUrl}
         alt="Profile Picture"
@@ -44,6 +44,19 @@ const UserBar = () => {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+  );
+};
+
+const Notifications = () => {
+  const { data: numRequests } = api.friends.getFriendReqCount.useQuery();
+
+  return (
+    <Link href="/app/notifications" className="group relative">
+      <BellIcon className="h-8 w-8 text-gray-500 group-hover:text-gray-700 " />
+      {numRequests && numRequests > 0 && (
+        <div className="absolute top-0 right-0 rounded-full bg-blue-300 p-1"></div>
+      )}
+    </Link>
   );
 };
 

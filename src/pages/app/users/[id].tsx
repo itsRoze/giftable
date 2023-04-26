@@ -4,39 +4,54 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useUser } from '@clerk/nextjs';
 import dayjs from 'dayjs';
-import { Edit, MoreVertical, Trash2 } from 'lucide-react';
+import { Edit, MoreVertical, Trash2, UserPlus, X } from 'lucide-react';
 import {
   type GetServerSideProps,
   type InferGetServerSidePropsType,
 } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { LoadingPage } from '~/components/Loading';
 import NewGiftForm from '~/components/forms/NewGiftForm';
 import UpdateGiftForm from '~/components/forms/UpdateGiftForm';
 import AppLayout from '~/components/layouts/mainApp/AppLayout';
-import { LoadingPage } from '~/components/Loading';
+import { Button } from '~/components/ui/button';
 import { useToast } from '~/components/ui/use-toast';
 import { WishlistGallery } from '~/components/wishlist';
 import { classNames } from '~/lib/helpers';
 import { type NextPageWithLayout } from '~/pages/_app';
-import { generateSSRHelper } from '~/server/helpers/ssrHelper';
+import { generateSSHelper } from '~/server/helpers/ssHelper';
 import { api, type RouterOutputs } from '~/utils/api';
 
 type PageProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const UserProfilePage: NextPageWithLayout<PageProps> = ({ id }) => {
+  const router = useRouter();
+  const { user: clerkUser } = useUser();
   const { data: user, isLoading } = api.user.getProfile.useQuery({ id });
+
+  useEffect(() => {
+    if (clerkUser && user && clerkUser.id === user.authId)
+      void router.push('/app');
+  }, [clerkUser, router, user]);
+
   if (isLoading) return <LoadingPage />;
-  if (!isLoading && (!user || !user.userId)) return <div>404</div>;
+  if (!isLoading && !user) return <div>404</div>;
+
+  if (clerkUser && user && clerkUser.id === user.authId) {
+    return <LoadingPage />;
+  }
 
   return (
     <article className="flex flex-col">
       <section className="my-8">
         <UserCard {...user} />
       </section>
-      <section className="my-8 flex flex-col items-center">
+      <section className="my-16 flex flex-col items-center">
         <ListMenu {...user} />
       </section>
     </article>
@@ -49,24 +64,98 @@ const UserCard: React.FC<UserProfile> = ({
   name,
   pronouns,
   birthday,
+  id,
 }) => {
+  const { data: friendStatus } = api.friends.getFriendStatus.useQuery(id);
+
+  const isFriend = friendStatus?.status === 'ACCEPTED';
   return (
-    <div className="flex items-center justify-center space-x-4">
-      <Image
-        src={avatarUrl}
-        alt="Profile Picture"
-        width={90}
-        height={90}
-        className="rounded-full"
-      />
-      <div className="space-y-3">
-        <h1 className="text-3xl font-bold">{name}</h1>
-        <div className="flex items-center justify-evenly text-gray-600">
-          <h2>({pronouns})</h2>
-          <h2>🎂 {dayjs(birthday).format('MMM D')}</h2>
+    <div className="flex flex-col items-center space-y-4">
+      <div className="flex items-center justify-center space-x-4">
+        <Image
+          src={avatarUrl}
+          alt="Profile Picture"
+          width={90}
+          height={90}
+          className="rounded-full"
+        />
+        <div className="space-y-3">
+          <h1 className="text-3xl font-bold">{name}</h1>
+          <div className="flex items-center justify-evenly text-gray-600">
+            <h2>({pronouns})</h2>
+            <h2>🎂 {dayjs(birthday).format('MMM D')}</h2>
+          </div>
         </div>
+        {isFriend && <FriendMenu id={id} />}
       </div>
+      {(friendStatus?.status === 'REJECTED' || !friendStatus?.status) && (
+        <AddFriendBtn id={id} />
+      )}
+      {friendStatus?.status === 'PENDING' && <CancelFriendReqBtn id={id} />}
     </div>
+  );
+};
+
+const AddFriendBtn: React.FC<{ id: string }> = ({ id }) => {
+  const { toast } = useToast();
+  const ctx = api.useContext();
+  const { mutate, isLoading } = api.friends.sendFriendRequest.useMutation({
+    onSuccess() {
+      void ctx.friends.invalidate();
+    },
+    onError() {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Please try again later.',
+      });
+    },
+  });
+
+  return (
+    <Button disabled={isLoading} onClick={() => mutate({ requestedId: id })}>
+      <UserPlus className="mr-2 h-4 w-4" /> <span>Add friend</span>
+    </Button>
+  );
+};
+
+const CancelFriendReqBtn: React.FC<{ id: string }> = ({ id }) => {
+  const { toast } = useToast();
+  const ctx = api.useContext();
+  const { mutate, isLoading } = api.friends.cancelFriendRequest.useMutation({
+    onSuccess() {
+      void ctx.friends.invalidate();
+    },
+    onError() {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Please try again later.',
+      });
+    },
+  });
+
+  return (
+    <Button
+      variant="secondary"
+      disabled={isLoading}
+      onClick={() => mutate({ requestedId: id })}
+    >
+      <X className="mr-2 h-4 w-4" /> Cancel Request
+    </Button>
+  );
+};
+
+const FriendMenu: React.FC<{ id: string }> = () => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <MoreVertical className="h-6 w-6" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem>Unfriend</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 
@@ -235,18 +324,18 @@ interface Props {
 export const getServerSideProps: GetServerSideProps<Props> = async (
   context
 ) => {
-  const ssr = generateSSRHelper();
+  const ss = generateSSHelper();
 
   const id = context.params?.id;
   if (typeof id !== 'string') {
     throw new Error('no user ID');
   }
 
-  await ssr.user.getProfile.prefetch({ id });
+  await ss.user.getProfile.prefetch({ id });
 
   return {
     props: {
-      trpcState: ssr.dehydrate(),
+      trpcState: ss.dehydrate(),
       id,
     },
   };

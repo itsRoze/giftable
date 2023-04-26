@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -5,18 +6,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, type SubmitHandler } from 'react-hook-form';
-import { type z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
-import { api } from '~/utils/api';
-import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { type z } from 'zod';
 import { giftIdeaSchema } from '~/lib/schemas/giftIdeaSchema';
+import { api } from '~/utils/api';
 
 type Inputs = z.infer<typeof giftIdeaSchema>;
 
@@ -51,22 +51,19 @@ const NewGiftForm = ({ giftToUserId }: { giftToUserId: string }) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting },
   } = useForm<Inputs>({
     resolver: zodResolver(giftIdeaSchema),
   });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     mutate(data);
-    console.log('SUBMITTED GIFT');
   };
 
   const onChange = (isOpen: boolean) => {
     setOpen(isOpen);
     reset();
   };
-
-  console.log('VALID', isValid);
 
   return (
     <Dialog open={open} onOpenChange={onChange}>

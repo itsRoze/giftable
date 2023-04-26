@@ -16,7 +16,7 @@ export const userRouter = createTRPCRouter({
   getCurrentUserDetails: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.user.findUnique({
       where: {
-        id: ctx.userId,
+        id: ctx.user.id,
       },
       select: {
         name: true,
@@ -35,7 +35,7 @@ export const userRouter = createTRPCRouter({
           wishlist: true,
           friendsGiftIdeas: {
             where: {
-              giftFromUserId: ctx.userId,
+              giftFromUserId: ctx.user.id,
             },
           },
         },
@@ -50,7 +50,7 @@ export const userRouter = createTRPCRouter({
 
       const userWithAvatar = {
         ...user,
-        avatarUrl: await getUserAvatar(user.userId),
+        avatarUrl: await getUserAvatar(user.authId),
       };
 
       if (!userWithAvatar) {
@@ -63,8 +63,8 @@ export const userRouter = createTRPCRouter({
       // filter for client
       const {
         avatarUrl,
+        authId,
         id,
-        userId,
         pronouns,
         birthday,
         name,
@@ -74,8 +74,8 @@ export const userRouter = createTRPCRouter({
 
       return {
         avatarUrl,
+        authId,
         id,
-        userId,
         pronouns,
         birthday,
         name,
@@ -86,7 +86,7 @@ export const userRouter = createTRPCRouter({
   getWishlistForCurrentUser: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUnique({
       where: {
-        id: ctx.userId,
+        id: ctx.user.id,
       },
       select: {
         wishlist: {
@@ -104,7 +104,7 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.update({
         where: {
-          id: ctx.userId,
+          id: ctx.user.id,
         },
         data: {
           wishlist: {
@@ -127,7 +127,7 @@ export const userRouter = createTRPCRouter({
   getGiftIdeasForCurrentUser: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findUnique({
       where: {
-        id: ctx.userId,
+        id: ctx.user.id,
       },
       select: {
         myGiftIdeas: true,
@@ -144,7 +144,7 @@ export const userRouter = createTRPCRouter({
         select: {
           friendsGiftIdeas: {
             where: {
-              giftFromUserId: ctx.userId,
+              giftFromUserId: ctx.user.id,
             },
           },
         },
@@ -156,7 +156,7 @@ export const userRouter = createTRPCRouter({
       console.log('ATTEMPTING SUBMIT');
       const user = await ctx.prisma.user.update({
         where: {
-          id: ctx.userId,
+          id: ctx.user.id,
         },
         data: {
           myGiftIdeas: {
@@ -175,30 +175,6 @@ export const userRouter = createTRPCRouter({
       });
 
       return user.myGiftIdeas[user.myGiftIdeas.length - 1];
-    }),
-  getFriendRelation: protectedProcedure
-    .input(z.string())
-    .query(async ({ ctx, input }) => {
-      const friendshipData = await ctx.prisma.friend.findFirst({
-        where: {
-          OR: [
-            {
-              requestedId: input,
-              requesterId: ctx.userId,
-            },
-            {
-              requestedId: ctx.userId,
-              requesterId: input,
-            },
-          ],
-        },
-      });
-
-      return {
-        status: friendshipData?.status,
-        requestedId: friendshipData?.requestedId,
-        requesterId: friendshipData?.requesterId,
-      };
     }),
   find: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
     if (!input) {
@@ -238,7 +214,7 @@ export const userRouter = createTRPCRouter({
         },
         data: {
           emailVerified: input.emailVerified,
-          userId: ctx.userId,
+          authId: ctx.user.authId,
         },
       });
     }),

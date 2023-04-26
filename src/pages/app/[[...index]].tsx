@@ -68,7 +68,7 @@ const UpcomingBirthdays = () => {
         )}
         {data.friends.map((user) => (
           <ProfilePicture
-            key={user.userId}
+            key={user.id}
             picUrl={user.avatarUrl}
             name={user.name}
             birthday={user.birthday}

@@ -1,10 +1,10 @@
 import { env } from '~/env.mjs';
 import { type User } from '~/lib/clerk.types';
 
-export const getUserAvatar = async (userId: string | null) => {
-  if (!userId) return 'http://www.gravatar.com/avatar/?d=mp';
+export const getUserAvatar = async (authId: string | null) => {
+  if (!authId) return 'http://www.gravatar.com/avatar/?d=mp';
   try {
-    const url = `https://api.clerk.dev/v1/users/${userId}`;
+    const url = `https://api.clerk.dev/v1/users/${authId}`;
     const res = await fetch(url, {
       method: 'GET',
       headers: {

@@ -19,8 +19,8 @@ model User {
   createdAt              DateTime       @default(now())
   updatedAt              DateTime       @updatedAt
   birthday               DateTime
-  // For Cler
-  userId                 String?        @unique
+  // For Clerk
+  authId                 String?        @unique
   friends                Friend[]       @relation("Friendship")
   // Friend Requests user has sent
   sentFriendRequests     Friend[]       @relation("SentFriendRequest")
