@@ -208,7 +208,7 @@ const ListMenu: React.FC<UserProfile> = ({
           >
             <span>Your Gift Ideas</span>
           </button>
-          <div onClick={() => setActiveTab('gifts')}>
+          <div className='flex items-center' onClick={() => setActiveTab('gifts')}>
             <NewGiftForm giftToUserId={id} />
           </div>
         </div>

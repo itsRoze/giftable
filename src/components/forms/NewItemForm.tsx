@@ -69,7 +69,7 @@ const NewItemForm = () => {
   return (
     <Dialog open={open} onOpenChange={onChange}>
       <DialogTrigger className="rounded-xl hover:bg-slate-200">
-        <PlusIcon className="h-12 w-12 stroke-[3]" />
+        <PlusIcon className="h-10 w-10 stroke-[3]" />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

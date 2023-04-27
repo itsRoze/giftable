@@ -161,7 +161,7 @@ const Gallery = ({ wishlist }: { wishlist: WishlistItem[] }) => {
   const size = wishlist.length;
 
   if (size === 0) {
-    return <p>No wishes 😭</p>;
+    return <p className="text-center">No wishes 😭</p>;
   }
 
   return (
@@ -195,7 +195,7 @@ const Wishlist = () => {
   return (
     <section className="flex flex-col space-y-6">
       <div className="flex items-center justify-center">
-        <h1 className="flex-1 text-center text-5xl font-medium">Wishlist</h1>
+        <h1 className="mr-2 text-center text-5xl font-medium">Wishlist</h1>
         <NewItemForm />
       </div>
       <Gallery wishlist={wishlist} />

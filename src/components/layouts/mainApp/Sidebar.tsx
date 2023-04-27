@@ -1,4 +1,3 @@
-import { SignOutButton } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -21,7 +20,7 @@ const Sidebar = () => {
   };
 
   return (
-    <nav className="flex h-screen w-1/6 flex-col">
+    <nav className="flex h-screen w-1/6 flex-col border-r border-r-gray-50">
       <Image
         src="/images/icons/giftable-icon.png"
         width={151}
@@ -57,7 +56,7 @@ const Sidebar = () => {
                   href={`/app/users/${encodeURIComponent(friend.id)}`}
                   className="hover:underline hover:underline-offset-4"
                 >
-                  {friend.name}{' '}
+                  {friend.name} ({friend.pronouns})
                 </Link>
               </li>
             ))
@@ -75,8 +74,6 @@ const Sidebar = () => {
           </div>
         ) : null}
       </ul>
-
-      <SignOutButton />
     </nav>
   );
 };
