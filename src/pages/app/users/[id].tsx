@@ -146,14 +146,30 @@ const CancelFriendReqBtn: React.FC<{ id: string }> = ({ id }) => {
   );
 };
 
-const FriendMenu: React.FC<{ id: string }> = () => {
+const FriendMenu: React.FC<{ id: string }> = ({id}) => {
+  const ctx = api.useContext();
+  const { toast } = useToast();
+  const {mutate: unfriendMutate } = api.friends.removeFriend.useMutation({
+    onSuccess() {
+      void ctx.friends.invalidate();
+    },
+    onError() {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Please try again later.',
+      });
+    },
+
+  });
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <MoreVertical className="h-6 w-6" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>Unfriend</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => unfriendMutate({ friendId: id})}>Unfriend</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
