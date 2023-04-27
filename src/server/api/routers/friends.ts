@@ -1,8 +1,10 @@
 import { type User } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { formatUsersWithAvatars } from '~/server/helpers/formatUsersWithAvatars';
 import { getUserAvatar } from '~/server/helpers/getUserAvater';
 
 dayjs.extend(isBetween);
@@ -134,7 +136,7 @@ export const friendsRouter = createTRPCRouter({
     return friends;
   }),
   getFriendRequests: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.user.findUnique({
+    const user = await ctx.prisma.user.findUnique({
       where: { id: ctx.user.id },
       select: {
         receivedFriendRequests: {
@@ -147,6 +149,14 @@ export const friendsRouter = createTRPCRouter({
         },
       },
     });
+
+    if (!user)
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+
+    const requesters = user.receivedFriendRequests.map((req) => req.requester);
+    const requestersWithAvatars = await formatUsersWithAvatars(requesters);
+
+    return requestersWithAvatars;
   }),
   getFriendReqCount: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.friend.count({

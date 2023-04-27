@@ -53,9 +53,9 @@ const Notifications = () => {
   return (
     <Link href="/app/notifications" className="group relative">
       <BellIcon className="h-8 w-8 text-gray-500 group-hover:text-gray-700 " />
-      {numRequests && numRequests > 0 && (
+      {numRequests && numRequests > 0 ? (
         <div className="absolute top-0 right-0 rounded-full bg-blue-300 p-1"></div>
-      )}
+      ) : null}
     </Link>
   );
 };

@@ -14,7 +14,7 @@ datasource db {
 model User {
   id                     String         @id @default(cuid())
   name                   String
-  email                  String?        @unique
+  email                  String        @unique
   emailVerified          DateTime?
   createdAt              DateTime       @default(now())
   updatedAt              DateTime       @updatedAt
@@ -32,7 +32,7 @@ model User {
   myGiftIdeas            GiftIdea[]     @relation("GiftIdeaFromUser")
   // User's gift ideas from their friends
   friendsGiftIdeas       GiftIdea[]     @relation("GiftIdeaToUser")
-  pronouns               String?
+  pronouns               String
 }
 
 model Friend {
