@@ -20,11 +20,13 @@ import UpdateItemForm from '~/components/forms/UpdateItemForm';
 import { classNames } from '~/lib/helpers';
 
 interface IProfilePicture {
+  id: string;
   picUrl: string | null;
   name: string;
   birthday: Date;
 }
 const ProfilePicture: React.FC<IProfilePicture> = ({
+  id,
   picUrl,
   name,
   birthday,
@@ -32,7 +34,7 @@ const ProfilePicture: React.FC<IProfilePicture> = ({
   return (
     <div className="flex flex-col items-center">
       <Link
-        href="#"
+        href={`/app/users/${encodeURIComponent(id)}`}
         className="h-fit w-fit rounded-full border-4 border-slate-400 p-1 transition-all duration-200 ease-in-out hover:border-indigo-300"
       >
         <Image
@@ -68,6 +70,7 @@ const UpcomingBirthdays = () => {
         )}
         {data.friends.map((user) => (
           <ProfilePicture
+            id={user.id}
             key={user.id}
             picUrl={user.avatarUrl}
             name={user.name}
