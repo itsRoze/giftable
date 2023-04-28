@@ -27,7 +27,7 @@ const Navbar = () => {
                     <div className="flex items-center justify-between">
                       <Link href="/" className="">
                         <Image
-                          src="/images/logo.svg"
+                          src="/images/logo.png"
                           alt="Giftable Logo"
                           width={688}
                           height={149}
@@ -78,7 +78,7 @@ const Navbar = () => {
                     </Disclosure.Button>
                     <Link href="/" className="ml-2">
                       <Image
-                        src="/images/logo.svg"
+                        src="/images/logo.png"
                         alt="Giftable Logo"
                         width={688}
                         height={149}
