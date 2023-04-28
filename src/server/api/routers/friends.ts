@@ -6,13 +6,13 @@ import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
 import { formatUsersWithAvatars } from '~/server/helpers/formatUsersWithAvatars';
 import { getUserAvatar } from '~/server/helpers/getUserAvater';
+import { sortFriendsByBirthday } from '~/server/helpers/sortFriendsByBirthday';
 
 dayjs.extend(isBetween);
 
 export const friendsRouter = createTRPCRouter({
   getUpcomingBirthdays: protectedProcedure.query(async ({ ctx }) => {
     // Get Friends
-    const friends: User[] = [];
     const friendshipData = await ctx.prisma.friend.findMany({
       where: {
         AND: [
@@ -29,19 +29,19 @@ export const friendsRouter = createTRPCRouter({
         ],
       },
       select: {
-        users: true,
+        users: {
+          where: {
+            id: {
+              not: ctx.user.id,
+            },
+          },
+        },
       },
     });
 
-    for (const friendship of friendshipData) {
-      if (friendship.users[0] && friendship.users[1]) {
-        friends.push(
-          friendship.users[0]?.id !== ctx.user.id
-            ? friendship.users[0]
-            : friendship.users[1]
-        );
-      }
-    }
+    const friends = friendshipData
+      .map((friendship) => friendship.users[0])
+      .filter((friend): friend is User => friend !== undefined);
 
     // Get friends whose birthday is within the next two months
     const filteredFriends = friends
@@ -76,6 +76,40 @@ export const friendsRouter = createTRPCRouter({
     return {
       friends: friendsWithAvatar,
     };
+  }),
+  getBirthdays: protectedProcedure.query(async ({ ctx }) => {
+    const friendshipData = await ctx.prisma.friend.findMany({
+      where: {
+        AND: [
+          {
+            users: {
+              some: {
+                id: ctx.user.id,
+              },
+            },
+          },
+          {
+            status: 'ACCEPTED',
+          },
+        ],
+      },
+      select: {
+        users: {
+          where: {
+            id: {
+              not: ctx.user.id,
+            },
+          },
+        },
+      },
+    });
+
+    const friends = friendshipData
+      .map((friendship) => friendship.users[0])
+      .filter((friend): friend is User => friend !== undefined);
+
+    const friendsWithAvatar = await formatUsersWithAvatars(friends);
+    return sortFriendsByBirthday(friendsWithAvatar);
   }),
   getFriendStatus: protectedProcedure
     .input(z.string())

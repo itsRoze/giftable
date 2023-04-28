@@ -5,7 +5,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useClerk, useUser } from '@clerk/nextjs';
-import { GiftIcon, HeartIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { GiftIcon, HomeIcon } from '@heroicons/react/24/outline';
 import { BellIcon, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -61,16 +61,14 @@ const Notifications = () => {
 };
 
 const DASHBOARD = '/app/[[...index]]';
-const WISHLIST = '/app/wishlist';
-const GIFT_IDEAS = '/app/giftideas';
+const BIRTHDAYS = '/app/birthdays';
 
 const Navbar = () => {
   const router = useRouter();
   const { pathname } = router;
 
   const isDashboard = pathname === DASHBOARD;
-  const isWishlist = pathname === WISHLIST;
-  const isGiftIdeas = pathname === GIFT_IDEAS;
+  const isBirthdays = pathname === BIRTHDAYS;
 
   return (
     <nav className="relative flex items-center justify-center">
@@ -92,26 +90,9 @@ const Navbar = () => {
             />
           </Link>
           <Link
-            href="/app/wishlist"
+            href="/app/birthdays"
             className={
-              isWishlist
-                ? 'rounded-xl bg-gray-500 p-2'
-                : 'group rounded-xl p-2 transition-all duration-200 ease-in-out hover:bg-gray-400'
-            }
-          >
-            <HeartIcon
-              className={classNames(
-                'h-8 w-8',
-                isWishlist
-                  ? 'text-blue-200'
-                  : 'text-gray-500 group-hover:text-blue-100'
-              )}
-            />
-          </Link>
-          <Link
-            href="/app/giftideas"
-            className={
-              isGiftIdeas
+              isBirthdays
                 ? 'rounded-xl bg-gray-500 p-2'
                 : 'group rounded-xl p-2 transition-all duration-200 ease-in-out hover:bg-gray-400'
             }
@@ -119,7 +100,7 @@ const Navbar = () => {
             <GiftIcon
               className={classNames(
                 'h-8 w-8',
-                isGiftIdeas ? 'text-blue-200' : 'text-gray-500'
+                isBirthdays ? 'text-blue-200' : 'text-gray-500'
               )}
             />
           </Link>

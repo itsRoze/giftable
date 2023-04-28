@@ -8,6 +8,7 @@ interface Props {
   name: string;
   pronouns: string;
   birthday: Date;
+  showFullBirthday?: boolean;
 }
 
 export const UserCard: React.FC<Props> = ({
@@ -16,7 +17,9 @@ export const UserCard: React.FC<Props> = ({
   name,
   pronouns,
   birthday,
+  showFullBirthday = false,
 }) => {
+  const birthdayFormat = showFullBirthday ? 'MMMM D, YYYY' : 'MMM D';
   return (
     <Link
       href={`/app/users/${encodeURIComponent(id)}`}
@@ -33,7 +36,7 @@ export const UserCard: React.FC<Props> = ({
         <h2 className="text-xl font-medium">{name}</h2>
         <div className="text-gray-600">
           <p>({pronouns})</p>
-          <p>🎂 {dayjs(birthday).format('MMM D')}</p>
+          <p>🎂 {dayjs(birthday).format(birthdayFormat)}</p>
         </div>
       </div>
     </Link>

@@ -20,7 +20,7 @@ const Sidebar = () => {
   };
 
   return (
-    <nav className="flex h-screen w-1/6 flex-col border-r border-r-gray-50">
+    <nav className="flex h-screen w-1/6 flex-col border-r border-r-gray-200">
       <Image
         src="/images/icons/giftable-icon.png"
         width={151}
