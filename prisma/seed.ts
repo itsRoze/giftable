@@ -18,7 +18,9 @@ type User = {
 const makeUser = (user: User) => {
   // Random user pronouns
   const pronouns = ['she/her', 'he/him', 'they/them', 'ze/zir', 'any/all'];
-  const randomPronouns = pronouns[Math.floor(Math.random() * pronouns.length)];
+  const randomPronouns = pronouns[
+    Math.floor(Math.random() * pronouns.length)
+  ] as string;
 
   return {
     name: user.name,
@@ -80,7 +82,7 @@ const createFriends = async () => {
 
     await prisma.user.update({
       where: {
-        email: user.email as string,
+        email: user.email,
       },
       data: {
         friends: {
@@ -110,7 +112,7 @@ const createWishlist = async () => {
     for (const item of randomItems) {
       await prisma.user.update({
         where: {
-          email: user.email as string,
+          email: user.email,
         },
         data: {
           wishlist: {
