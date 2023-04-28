@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { giftIdeaSchema } from '~/lib/schemas/giftIdeaSchema';
 import { userCreateSchema } from '~/lib/schemas/userCreateSchema';
+import { userDetailsSchema } from '~/lib/schemas/userDetailsSchema';
 import { wishlistItemSchema } from '~/lib/schemas/wishlistItemSchema';
 
 import {
@@ -14,7 +15,7 @@ import { getUserAvatar } from '~/server/helpers/getUserAvater';
 
 export const userRouter = createTRPCRouter({
   getCurrentUserDetails: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.user.findUnique({
+    const userDetails = await ctx.prisma.user.findUnique({
       where: {
         id: ctx.user.id,
       },
@@ -23,7 +24,26 @@ export const userRouter = createTRPCRouter({
         pronouns: true,
       },
     });
+
+    if (!userDetails) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'User not found',
+      });
+    }
+
+    return userDetails;
   }),
+  updateUserDetails: protectedProcedure
+    .input(userDetailsSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.user.update({
+        where: {
+          id: ctx.user.id,
+        },
+        data: input,
+      });
+    }),
   getProfile: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {

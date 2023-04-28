@@ -32,7 +32,7 @@ model User {
   myGiftIdeas            GiftIdea[]     @relation("GiftIdeaFromUser")
   // User's gift ideas from their friends
   friendsGiftIdeas       GiftIdea[]     @relation("GiftIdeaToUser")
-  pronouns               String
+  pronouns               String @db.VarChar(40)
 }
 
 model Friend {
