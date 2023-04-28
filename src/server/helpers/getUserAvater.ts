@@ -13,10 +13,8 @@ export const getUserAvatar = async (authId: string | null) => {
     });
 
     const data = (await res.json()) as User;
-    console.log('PICTURE', data);
     return data.profile_image_url;
   } catch (error) {
-    console.log(error);
     return 'http://www.gravatar.com/avatar/?d=mp';
   }
 };

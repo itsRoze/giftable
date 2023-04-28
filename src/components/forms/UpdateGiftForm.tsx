@@ -42,8 +42,7 @@ const UpdateGiftForm = ({
       }
       void ctx.user.invalidate();
     },
-    onError(error) {
-      console.log(error.message);
+    onError() {
       toast({
         variant: 'destructive',
         title: 'Uh oh! Something went wrong.',
@@ -76,9 +75,6 @@ const UpdateGiftForm = ({
     setOpen(isOpen);
     reset();
   };
-
-  console.log(errors);
-  console.log(giftIdea);
 
   return (
     <Dialog open={open} onOpenChange={onChange}>

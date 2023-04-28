@@ -1,5 +1,4 @@
 import { useSignUp } from '@clerk/clerk-react';
-import { useUser } from '@clerk/nextjs';
 import type { ClerkAPIError } from '@clerk/types';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -97,7 +96,6 @@ const SignUpForm = ({
       const errMsg = parseErrorMessage(
         error as { errors?: ClerkAPIError[]; message?: string }
       );
-      console.log(errMsg);
       setAuthErr(errMsg);
     }
   };
@@ -271,10 +269,8 @@ const VerifyCodeForm: React.FC = () => {
         strategy: 'email_code',
       });
 
-      console.log(res);
 
       if (res.status === 'complete' && res.emailAddress) {
-        console.log('creating user');
         await setSession(res.createdSessionId);
         // TODO: Set Verified Email as a Clerk Webhook
         mutate({ email: res.emailAddress, emailVerified: new Date() });
@@ -328,11 +324,6 @@ const VerifyCodeForm: React.FC = () => {
 
 const SignUpPage: NextPageWithLayout = () => {
   const [pendingVerifcation, setPendingVerification] = useState(false);
-  const { isSignedIn } = useUser();
-
-  if (isSignedIn) {
-    console.log('SIGNED IN');
-  }
 
   return (
     <article>

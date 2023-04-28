@@ -173,7 +173,6 @@ export const userRouter = createTRPCRouter({
   addGiftIdea: protectedProcedure
     .input(giftIdeaSchema)
     .mutation(async ({ ctx, input }) => {
-      console.log('ATTEMPTING SUBMIT');
       const user = await ctx.prisma.user.update({
         where: {
           id: ctx.user.id,

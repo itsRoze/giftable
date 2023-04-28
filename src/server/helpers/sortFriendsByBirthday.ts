@@ -16,8 +16,6 @@ export const sortFriendsByBirthday = (friends: UserWithAvatar[]) => {
       nextBirthday = nextBirthday.add(1, 'year');
     }
 
-    console.log(nextBirthday.format('YYYY-MM-DD'));
-
     const daysUntilBirthday = nextBirthday.diff(today, 'days');
 
     return {

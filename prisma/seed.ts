@@ -96,8 +96,6 @@ const createFriends = async () => {
       },
     });
   }
-
-  console.log(jessicaUser);
 };
 
 // Create Wishlist

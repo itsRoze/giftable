@@ -38,8 +38,7 @@ const NewItemForm = () => {
         }
         void ctx.user.invalidate();
       },
-      onError(error) {
-        console.log(error.message);
+      onError() {
         toast({
           variant: 'destructive',
           title: 'Uh oh! Something went wrong.',
