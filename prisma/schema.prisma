@@ -16,6 +16,7 @@ model User {
   name                   String
   email                  String        @unique
   emailVerified          DateTime?
+  profileComplete        Boolean       @default(false)
   createdAt              DateTime       @default(now())
   updatedAt              DateTime       @updatedAt
   birthday               DateTime

@@ -12,9 +12,10 @@ const isPublic = (path: string) => {
 
 export default withClerkMiddleware((request: NextRequest) => {
   const { userId } = getAuth(request);
+  const pathname = request.nextUrl.pathname;
 
-  if (isPublic(request.nextUrl.pathname)) {
-    if (userId) {
+  if (isPublic(pathname)) {
+    if (userId && (pathname === '/sign-in' || pathname === '/sign-up')) {
       const appUrl = new URL('/app', request.url);
       return NextResponse.redirect(appUrl);
     }

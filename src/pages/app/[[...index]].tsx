@@ -18,6 +18,9 @@ import { useToast } from '~/components/ui/use-toast';
 import { useState } from 'react';
 import UpdateItemForm from '~/components/forms/UpdateItemForm';
 import { classNames } from '~/lib/helpers';
+import { type GetServerSideProps } from 'next';
+import { prisma } from '~/server/db';
+import { getAuth } from '@clerk/nextjs/server';
 
 interface IProfilePicture {
   id: string;
@@ -210,6 +213,49 @@ const Dashboard: NextPageWithLayout = () => {
       <Wishlist />
     </article>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { userId: authId } = getAuth(ctx.req);
+  if (!authId) {
+    return {
+      redirect: {
+        destination: '/signin',
+        permanent: false,
+      },
+    };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      authId: authId,
+    },
+    select: {
+      profileComplete: true,
+    },
+  });
+
+  if (!user) {
+    return {
+      redirect: {
+        destination: '/signin',
+        permanent: false,
+      },
+    };
+  }
+
+  if (!user.profileComplete) {
+    return {
+      redirect: {
+        destination: '/app/completeProfile',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default Dashboard;
