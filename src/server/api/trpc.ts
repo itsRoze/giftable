@@ -18,6 +18,32 @@ import { getAuth } from '@clerk/nextjs/server';
 import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
 import { prisma } from '~/server/db';
 
+type UserOptions = {
+  authId: string;
+  id?: string;
+};
+
+type CreateContextOptions = {
+  user: UserOptions | null;
+};
+
+/**
+ * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
+ * it from here.
+ *
+ * Examples of things you may need it for:
+ * - testing, so we don't have to mock Next.js' req/res
+ * - tRPC's `createSSGHelpers`, where we don't have req/res
+ *
+ * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
+ */
+const createInnerTRPCContext = (opts: CreateContextOptions) => {
+  return {
+    user: opts.user,
+    prisma,
+  };
+};
+
 /**
  * This is the actual context you will use in your router. It will be used to process every request
  * that goes through your tRPC endpoint.
@@ -33,7 +59,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const authId = session.userId;
 
   if (!authId) {
-    throw new TRPCError({ code: 'NOT_FOUND', message: 'User has no Auth ID' });
+    return createInnerTRPCContext({ user: null });
   }
 
   const user = await prisma.user.findUnique({
@@ -46,16 +72,15 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   });
 
   if (!user) {
-    throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+    return createInnerTRPCContext({ user: { authId } });
   }
 
-  return {
-    prisma,
+  return createInnerTRPCContext({
     user: {
       authId,
       id: user.id,
     },
-  };
+  });
 };
 
 /**
@@ -106,9 +131,27 @@ export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.user.id) {
-    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  if (!ctx.user || !ctx.user.authId) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'User not authenticated',
+    });
   }
+
+  return next({
+    ctx: {
+      user: {
+        authId: ctx.user.authId,
+      },
+    },
+  });
+});
+
+const enforceUserExists = t.middleware(({ ctx, next }) => {
+  if (!ctx.user || !ctx.user.authId || !ctx.user.id) {
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not found' });
+  }
+
   return next({
     ctx: {
       user: ctx.user,
@@ -125,3 +168,4 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+export const privateProcedure = t.procedure.use(enforceUserExists);

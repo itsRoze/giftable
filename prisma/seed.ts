@@ -13,7 +13,6 @@ const randomDate = () => {
 type User = {
   name: string;
   authId: string;
-  emailVerified: Date;
 };
 const makeUser = (user: User) => {
   // Random user pronouns
@@ -25,10 +24,8 @@ const makeUser = (user: User) => {
   return {
     name: user.name,
     pronouns: randomPronouns,
-    email: `${user.name.toLowerCase().replace(' ', '')}@gmail.com`,
     birthday: randomDate(),
     authId: user.authId,
-    emailVerified: user.emailVerified,
   };
 };
 
@@ -50,7 +47,7 @@ const createUsers = async () => {
 const createFriends = async () => {
   const jessicaUser = await prisma.user.findUnique({
     where: {
-      email: 'jessicahart@gmail.com',
+      authId: 'user_2OQe99wUvxqPvH8ZbQrkQF4oqcP',
     },
   });
 
@@ -67,7 +64,7 @@ const createFriends = async () => {
     if (count > 6) break;
     await prisma.user.update({
       where: {
-        email: 'jessicahart@gmail.com',
+        authId: 'user_2OQe99wUvxqPvH8ZbQrkQF4oqcP',
       },
       data: {
         friends: {
@@ -82,7 +79,7 @@ const createFriends = async () => {
 
     await prisma.user.update({
       where: {
-        email: user.email,
+        authId: user.authId,
       },
       data: {
         friends: {
@@ -110,7 +107,7 @@ const createWishlist = async () => {
     for (const item of randomItems) {
       await prisma.user.update({
         where: {
-          email: user.email,
+          authId: user.authId,
         },
         data: {
           wishlist: {

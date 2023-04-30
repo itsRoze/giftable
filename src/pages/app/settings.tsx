@@ -11,7 +11,7 @@ import { Label } from '~/components/ui/label';
 import { Skeleton } from '~/components/ui/skeleton';
 import { useToast } from '~/components/ui/use-toast';
 import { classNames } from '~/lib/helpers';
-import { userDetailsSchema } from '~/lib/schemas/userDetailsSchema';
+import { userCreateSchema } from '~/lib/schemas/userCreateSchema';
 import { api } from '~/utils/api';
 import { type NextPageWithLayout } from '../_app';
 
@@ -61,7 +61,7 @@ const Menu = () => {
   );
 };
 
-type Inputs = z.infer<typeof userDetailsSchema>;
+type Inputs = z.infer<typeof userCreateSchema>;
 const OtherSettingsForm = () => {
   const { toast } = useToast();
   const ctx = api.useContext();
@@ -90,7 +90,7 @@ const OtherSettingsForm = () => {
     formState: { errors, isSubmitting },
     reset,
   } = useForm<Inputs>({
-    resolver: zodResolver(userDetailsSchema),
+    resolver: zodResolver(userCreateSchema),
     defaultValues: {
       name: user?.name,
       pronouns: user?.pronouns,

@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import { updateWishlistItemSchema } from '~/lib/schemas/updateWishlistItemSchema';
 
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, privateProcedure } from '~/server/api/trpc';
 
 export const wishlistRouter = createTRPCRouter({
-  remove: protectedProcedure
+  remove: privateProcedure
     .input(z.object({ itemId: z.number() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.wishlistItem.delete({
@@ -13,7 +13,7 @@ export const wishlistRouter = createTRPCRouter({
         },
       });
     }),
-  update: protectedProcedure
+  update: privateProcedure
     .input(updateWishlistItemSchema)
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.wishlistItem.update({

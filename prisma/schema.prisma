@@ -13,15 +13,12 @@ datasource db {
 
 model User {
   id                     String         @id @default(cuid())
-  name                   String
-  email                  String        @unique
-  emailVerified          DateTime?
-  profileComplete        Boolean       @default(false)
   createdAt              DateTime       @default(now())
   updatedAt              DateTime       @updatedAt
-  birthday               DateTime
   // For Clerk
-  authId                 String?        @unique
+  authId                 String        @unique
+  name                   String
+  birthday               DateTime
   friends                Friend[]       @relation("Friendship")
   // Friend Requests user has sent
   sentFriendRequests     Friend[]       @relation("SentFriendRequest")

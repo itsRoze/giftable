@@ -2,19 +2,18 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { giftIdeaSchema } from '~/lib/schemas/giftIdeaSchema';
 import { userCreateSchema } from '~/lib/schemas/userCreateSchema';
-import { userDetailsSchema } from '~/lib/schemas/userDetailsSchema';
 import { wishlistItemSchema } from '~/lib/schemas/wishlistItemSchema';
 
 import {
   createTRPCRouter,
+  privateProcedure,
   protectedProcedure,
-  publicProcedure,
 } from '~/server/api/trpc';
 import { formatUsersWithAvatars } from '~/server/helpers/formatUsersWithAvatars';
 import { getUserAvatar } from '~/server/helpers/getUserAvater';
 
 export const userRouter = createTRPCRouter({
-  getCurrentUserDetails: protectedProcedure.query(async ({ ctx }) => {
+  getCurrentUserDetails: privateProcedure.query(async ({ ctx }) => {
     const userDetails = await ctx.prisma.user.findUnique({
       where: {
         id: ctx.user.id,
@@ -34,8 +33,8 @@ export const userRouter = createTRPCRouter({
 
     return userDetails;
   }),
-  updateUserDetails: protectedProcedure
-    .input(userDetailsSchema)
+  updateUserDetails: privateProcedure
+    .input(userCreateSchema)
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.user.update({
         where: {
@@ -44,7 +43,7 @@ export const userRouter = createTRPCRouter({
         data: input,
       });
     }),
-  getProfile: protectedProcedure
+  getProfile: privateProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.findUnique({
@@ -103,7 +102,7 @@ export const userRouter = createTRPCRouter({
         friendsGiftIdeas,
       };
     }),
-  getWishlistForCurrentUser: protectedProcedure.query(async ({ ctx }) => {
+  getWishlistForCurrentUser: privateProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUnique({
       where: {
         id: ctx.user.id,
@@ -119,7 +118,7 @@ export const userRouter = createTRPCRouter({
 
     return user?.wishlist || [];
   }),
-  addToWishlistForCurrentUser: protectedProcedure
+  addToWishlistForCurrentUser: privateProcedure
     .input(wishlistItemSchema)
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.update({
@@ -144,7 +143,7 @@ export const userRouter = createTRPCRouter({
       // return last item in wishlist
       return user.wishlist[user.wishlist.length - 1];
     }),
-  getGiftIdeasForCurrentUser: protectedProcedure.query(({ ctx }) => {
+  getGiftIdeasForCurrentUser: privateProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findUnique({
       where: {
         id: ctx.user.id,
@@ -154,7 +153,7 @@ export const userRouter = createTRPCRouter({
       },
     });
   }),
-  getGiftIdeasForFriend: protectedProcedure
+  getGiftIdeasForFriend: privateProcedure
     .input(z.object({ friendId: z.string() }))
     .query(async ({ ctx, input }) => {
       return ctx.prisma.user.findUnique({
@@ -170,7 +169,7 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
-  addGiftIdea: protectedProcedure
+  addGiftIdea: privateProcedure
     .input(giftIdeaSchema)
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.update({
@@ -195,7 +194,7 @@ export const userRouter = createTRPCRouter({
 
       return user.myGiftIdeas[user.myGiftIdeas.length - 1];
     }),
-  find: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
+  find: privateProcedure.input(z.string()).query(async ({ ctx, input }) => {
     if (!input) {
       return [];
     }
@@ -209,32 +208,18 @@ export const userRouter = createTRPCRouter({
 
     return formatUsersWithAvatars(users);
   }),
-  create: publicProcedure
+  create: protectedProcedure
     .input(userCreateSchema)
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.prisma.user.create({
         data: {
           name: input.name,
-          email: input.email,
-          birthday: new Date(input.birthdate),
+          birthday: input.birthday,
           pronouns: input.pronouns,
-          emailVerified: input.emailVerified,
+          authId: ctx.user.authId,
         },
       });
 
       return user;
-    }),
-  setEmailVerified: protectedProcedure
-    .input(z.object({ email: z.string().email(), emailVerified: z.date() }))
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.user.update({
-        where: {
-          email: input.email,
-        },
-        data: {
-          emailVerified: input.emailVerified,
-          authId: ctx.user.authId,
-        },
-      });
     }),
 });

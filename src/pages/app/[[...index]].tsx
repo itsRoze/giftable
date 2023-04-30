@@ -217,6 +217,8 @@ const Dashboard: NextPageWithLayout = () => {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { userId: authId } = getAuth(ctx.req);
+
+  // User is not signed in
   if (!authId) {
     return {
       redirect: {
@@ -230,21 +232,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     where: {
       authId: authId,
     },
-    select: {
-      profileComplete: true,
-    },
   });
 
+  // User doesn't exist in DB
   if (!user) {
-    return {
-      redirect: {
-        destination: '/signin',
-        permanent: false,
-      },
-    };
-  }
-
-  if (!user.profileComplete) {
     return {
       redirect: {
         destination: '/app/completeProfile',

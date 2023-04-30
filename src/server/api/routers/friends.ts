@@ -3,7 +3,7 @@ import { TRPCError } from '@trpc/server';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { z } from 'zod';
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, privateProcedure } from '~/server/api/trpc';
 import { formatUsersWithAvatars } from '~/server/helpers/formatUsersWithAvatars';
 import { getUserAvatar } from '~/server/helpers/getUserAvater';
 import { sortFriendsByBirthday } from '~/server/helpers/sortFriendsByBirthday';
@@ -11,7 +11,7 @@ import { sortFriendsByBirthday } from '~/server/helpers/sortFriendsByBirthday';
 dayjs.extend(isBetween);
 
 export const friendsRouter = createTRPCRouter({
-  getUpcomingBirthdays: protectedProcedure.query(async ({ ctx }) => {
+  getUpcomingBirthdays: privateProcedure.query(async ({ ctx }) => {
     // Get Friends
     const friendshipData = await ctx.prisma.friend.findMany({
       where: {
@@ -77,7 +77,7 @@ export const friendsRouter = createTRPCRouter({
       friends: friendsWithAvatar,
     };
   }),
-  getBirthdays: protectedProcedure.query(async ({ ctx }) => {
+  getBirthdays: privateProcedure.query(async ({ ctx }) => {
     const friendshipData = await ctx.prisma.friend.findMany({
       where: {
         AND: [
@@ -111,7 +111,7 @@ export const friendsRouter = createTRPCRouter({
     const friendsWithAvatar = await formatUsersWithAvatars(friends);
     return sortFriendsByBirthday(friendsWithAvatar);
   }),
-  getFriendStatus: protectedProcedure
+  getFriendStatus: privateProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
       const friendshipData = await ctx.prisma.friend.findFirst({
@@ -135,7 +135,7 @@ export const friendsRouter = createTRPCRouter({
         requesterId: friendshipData?.requesterId,
       };
     }),
-  getFriends: protectedProcedure.query(async ({ ctx }) => {
+  getFriends: privateProcedure.query(async ({ ctx }) => {
     const friends: User[] = [];
     const friendshipData = await ctx.prisma.friend.findMany({
       where: {
@@ -169,7 +169,7 @@ export const friendsRouter = createTRPCRouter({
 
     return friends;
   }),
-  getFriendRequests: protectedProcedure.query(async ({ ctx }) => {
+  getFriendRequests: privateProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUnique({
       where: { id: ctx.user.id },
       select: {
@@ -192,7 +192,7 @@ export const friendsRouter = createTRPCRouter({
 
     return requestersWithAvatars;
   }),
-  getFriendReqCount: protectedProcedure.query(async ({ ctx }) => {
+  getFriendReqCount: privateProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.friend.count({
       where: {
         requestedId: ctx.user.id,
@@ -200,7 +200,7 @@ export const friendsRouter = createTRPCRouter({
       },
     });
   }),
-  sendFriendRequest: protectedProcedure
+  sendFriendRequest: privateProcedure
     .input(z.object({ requestedId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.user.update({
@@ -218,7 +218,7 @@ export const friendsRouter = createTRPCRouter({
         },
       });
     }),
-  acceptFriendRequest: protectedProcedure
+  acceptFriendRequest: privateProcedure
     .input(z.object({ requesterId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.user.update({
@@ -250,7 +250,7 @@ export const friendsRouter = createTRPCRouter({
         },
       });
     }),
-  declineFriendRequest: protectedProcedure
+  declineFriendRequest: privateProcedure
     .input(z.object({ requesterId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.friend.delete({
@@ -262,7 +262,7 @@ export const friendsRouter = createTRPCRouter({
         },
       });
     }),
-  cancelFriendRequest: protectedProcedure
+  cancelFriendRequest: privateProcedure
     .input(z.object({ requestedId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.friend.delete({
@@ -274,7 +274,7 @@ export const friendsRouter = createTRPCRouter({
         },
       });
     }),
-  removeFriend: protectedProcedure
+  removeFriend: privateProcedure
     .input(z.object({ friendId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.friend.deleteMany({

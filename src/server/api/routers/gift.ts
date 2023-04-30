@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import { updateGiftIdeaSchema } from '~/lib/schemas/updateGiftIdeaSchema';
 
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, privateProcedure } from '~/server/api/trpc';
 
 export const giftRouter = createTRPCRouter({
-  remove: protectedProcedure
+  remove: privateProcedure
     .input(z.object({ itemId: z.number() }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.giftIdea.delete({
@@ -13,7 +13,7 @@ export const giftRouter = createTRPCRouter({
         },
       });
     }),
-  update: protectedProcedure
+  update: privateProcedure
     .input(updateGiftIdeaSchema)
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.giftIdea.update({
