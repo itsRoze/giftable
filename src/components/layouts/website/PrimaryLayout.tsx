@@ -1,5 +1,6 @@
-import { Cookie } from "next/font/google";
+import { Cookie } from 'next/font/google';
 import Head from 'next/head';
+import Link from 'next/link';
 import Navbar from '~/components/layouts/website/SiteNav';
 
 const cookie = Cookie({
@@ -23,10 +24,13 @@ const PrimaryLayout: React.FC<IPrimaryLayout> = ({ children }) => {
       <main
         className={`flex min-h-screen flex-col bg-gradient-to-t from-red-200 to-purple-400 ${cookie.variable}`}
       >
-        <div className="mx-3 mt-3 flex-grow rounded-tl-3xl rounded-tr-3xl bg-gradient-to-b from-red-100 to-slate-50 py-5 px-5 shadow-2xl shadow-black md:mx-20 md:mt-20 md:px-20">
+        <div className="mx-3 mt-3 flex-grow rounded-3xl rounded-tr-3xl bg-gradient-to-b from-red-100 to-slate-50 py-5 px-5 shadow-2xl shadow-black md:mx-20 md:mt-20 md:px-20">
           <Navbar />
           <div className="w-full">{children}</div>
         </div>
+        <footer className="flex flex-grow items-end justify-center py-8">
+          <Link href="/">© Roze 🌹 {new Date().getFullYear()}</Link>
+        </footer>
       </main>
     </>
   );
