@@ -154,7 +154,10 @@ const enforceUserExists = t.middleware(({ ctx, next }) => {
 
   return next({
     ctx: {
-      user: ctx.user,
+      user: {
+        authId: ctx.user.authId,
+        id: ctx.user.id,
+      },
     },
   });
 });
