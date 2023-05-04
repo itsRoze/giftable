@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Disclosure } from '@headlessui/react';
 import Bars3Icon from '@heroicons/react/24/outline/Bars3Icon';
 import XMarkIcon from '@heroicons/react/24/outline/XMarkIcon';
@@ -25,15 +26,20 @@ const Navbar = () => {
                 <div className="flex h-16 items-center justify-start">
                   <div className="hidden w-full md:block ">
                     <div className="flex items-center justify-between">
-                      <Link href="/" className="">
-                        <Image
-                          src="/images/logo.png"
-                          alt="Giftable Logo"
-                          width={688}
-                          height={149}
-                          className="w-72"
-                        />
-                      </Link>
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.8 }}
+                      >
+                        <Link href="/" className="">
+                          <Image
+                            src="/images/logo.png"
+                            alt="Giftable Logo"
+                            width={688}
+                            height={149}
+                            className="w-60 lg:w-72"
+                          />
+                        </Link>
+                      </motion.div>
                       <div className="flex items-center space-x-6">
                         {navigation.map((item) => (
                           <Link
@@ -82,7 +88,7 @@ const Navbar = () => {
                         alt="Giftable Logo"
                         width={688}
                         height={149}
-                        className="w-72"
+                        className="w-48 md:w-72"
                       />
                     </Link>
                   </div>
@@ -107,7 +113,7 @@ const Navbar = () => {
                       {item.name}
                     </Disclosure.Button>
                   ))}
-                  <Disclosure.Button>
+                  <Disclosure.Button className="py-2">
                     <Link
                       href="/sign-up"
                       className="m-1 rounded-lg bg-sky-900 p-2 text-sm font-medium text-white shadow-md shadow-black hover:bg-sky-800  md:text-base"

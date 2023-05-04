@@ -28,33 +28,33 @@ const Icons = () => {
       variants={container}
       initial="hidden"
       animate="visible"
-      className="relative h-full max-h-80 w-full max-w-lg"
+      className="relative my-4 h-full max-h-80 w-full max-w-lg"
     >
       <motion.li key={0} variants={item}>
         <Image
           src="/images/icons/heart-icon.png"
-          width={93}
-          height={95}
+          width={186}
+          height={190}
           alt="Heart icon"
-          className="absolute top-0 left-0"
+          className="absolute top-0 left-0 h-16 w-auto md:h-20"
         />
       </motion.li>
       <motion.li key={0} variants={item}>
         <Image
           src="/images/icons/cake-icon.png"
-          width={97}
-          height={100}
+          width={193}
+          height={200}
           alt="Cake icon"
-          className="absolute top-1/3 left-2/3"
+          className="absolute top-1/3 left-2/3 h-16 w-auto md:h-20"
         />
       </motion.li>
       <motion.li key={0} variants={item}>
         <Image
           src="/images/icons/plus-icon.png"
-          width={97}
-          height={99}
+          width={194}
+          height={198}
           alt="Plus icon"
-          className="absolute top-2/3 left-1/4"
+          className="absolute top-2/3 left-1/4 h-16 w-auto md:h-20"
         />
       </motion.li>
     </motion.ul>
@@ -90,7 +90,7 @@ const Home: NextPageWithLayout = () => {
             <h2 className="w-fit rounded-lg bg-orange-200 p-2 font-semibold text-orange-500">
               🎂 the ultimate birthday reminder
             </h2>
-            <h1 className=" text-7xl font-medium xl:text-8xl">
+            <h1 className="mt-2 text-5xl font-medium md:text-7xl xl:text-8xl">
               Give the <span className="text-cyan-700">perfect</span> gift,
               every time ✨
             </h1>
@@ -105,8 +105,8 @@ const Home: NextPageWithLayout = () => {
           <Icons />
         </section>
       </div>
-      <section className="mt-20 flex flex-col items-center justify-center">
-        <div className="w-2/3">
+      <section className="mt-14 flex flex-col items-center justify-center md:mt-20">
+        <div className="xl:w-3/4">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -131,7 +131,7 @@ const Home: NextPageWithLayout = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="mt-8 space-y-10 text-center text-5xl font-light"
+          className="mt-8 space-y-10 text-center text-2xl font-light lg:text-5xl"
         >
           <motion.li key={0} variants={item}>
             Organize gift ideas for your friends and family.{' '}
@@ -144,19 +144,19 @@ const Home: NextPageWithLayout = () => {
           </motion.li>
         </motion.ul>
       </section>
-      <section className="mt-20 mb-10 flex justify-center">
+      <section className="mt-10 mb-10 flex justify-center">
         <motion.button
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          transition={{ duration: 1.5 }}
+          transition={{ duration: 0.3 }}
           variants={{
             visible: { opacity: 1 },
             hidden: { opacity: 0 },
           }}
-          whileHover={{ scale: 1.2 }}
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.8 }}
-          className="m-1 rounded-lg bg-sky-900 p-6 text-3xl font-medium text-white shadow-md shadow-black hover:bg-sky-800  "
+          className="m-1 rounded-lg bg-sky-900 p-3 text-xl font-medium text-white shadow-md shadow-black hover:bg-sky-800 lg:p-6 lg:text-3xl  "
         >
           Get Started Today
         </motion.button>
