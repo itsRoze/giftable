@@ -19,9 +19,6 @@ const SignInPage: NextPageWithLayout = () => {
       transition={{ type: 'linear' }} // Set the transition to linear
     >
       <section className="flex justify-center">
-        <h1 className="text-4xl font-medium lg:text-7xl xl:text-8xl">Login</h1>
-      </section>
-      <section className="flex justify-center py-16">
         <SignIn
           path="/sign-in"
           routing="path"
@@ -30,7 +27,12 @@ const SignInPage: NextPageWithLayout = () => {
           appearance={{
             elements: {
               formButtonPrimary: 'bg-sky-900 hover:bg-sky-800',
-              card: 'w-full h-auto',
+              card: 'w-full h-auto bg-transparent shadow-none',
+              logoImage: 'hidden',
+              logoBox: 'hidden',
+            },
+            variables: {
+              colorPrimary: '#0c4a6e',
             },
           }}
         />
