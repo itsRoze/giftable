@@ -1,12 +1,12 @@
-import { motion } from 'framer-motion';
 import { useSignUp } from '@clerk/clerk-react';
 import type { ClerkAPIError } from '@clerk/types';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { LoadingSpinner } from '~/components/Loading';
 import PrimaryLayout from '~/components/layouts/website/PrimaryLayout';
+import { LoadingSpinner } from '~/components/Loading';
 import { type NextPageWithLayout } from '~/pages/_app';
 
 const parseErrorMessage = (err: {
