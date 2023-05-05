@@ -27,6 +27,12 @@ const SignInPage: NextPageWithLayout = () => {
           routing="path"
           signUpUrl="/sign-up"
           redirectUrl="/app"
+          appearance={{
+            elements: {
+              formButtonPrimary: 'bg-sky-900 hover:bg-sky-800',
+              card: 'w-full h-auto',
+            },
+          }}
         />
       </section>
     </motion.article>
