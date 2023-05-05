@@ -26,10 +26,7 @@ const Navbar = () => {
                 <div className="flex h-16 items-center justify-start">
                   <div className="hidden w-full md:block ">
                     <div className="flex items-center justify-between">
-                      <motion.div
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.8 }}
-                      >
+                      <motion.div whileHover={{ scale: 1.1 }}>
                         <Link href="/" className="">
                           <Image
                             src="/images/logo.png"

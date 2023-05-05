@@ -6,7 +6,7 @@ const SignInPage: NextPageWithLayout = () => {
   return (
     <article>
       <section className="flex justify-center">
-        <h1 className="text-7xl font-medium xl:text-8xl">Login</h1>
+        <h1 className="text-4xl font-medium lg:text-7xl xl:text-8xl">Login</h1>
       </section>
       <section className="flex justify-center py-16">
         <SignIn
