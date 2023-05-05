@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useSignUp } from '@clerk/clerk-react';
 import type { ClerkAPIError } from '@clerk/types';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
@@ -127,7 +128,7 @@ const SignUpForm = ({
         type="submit"
         className=" rounded-2xl bg-sky-900 p-5 shadow-md shadow-black transition duration-300 ease-in-out hover:bg-sky-800"
       >
-        <ArrowRightIcon className="h-10 w-10 text-white " />
+        <ArrowRightIcon className="h-5 w-5 text-white md:h-10 md:w-10 " />
       </button>
     </form>
   );
@@ -209,13 +210,33 @@ const VerifyCodeForm: React.FC = () => {
 const SignUpPage: NextPageWithLayout = () => {
   const [pendingVerifcation, setPendingVerification] = useState(false);
 
+  const variants = {
+    hidden: { opacity: 0, x: -200, y: 0 },
+    enter: { opacity: 1, x: 0, y: 0 },
+    exit: { opacity: 0, x: 0, y: -100 },
+  };
+
+  const reverseVariants = {
+    hidden: { opacity: 0, x: 200, y: 0 },
+    enter: { opacity: 1, x: 0, y: 0 },
+    exit: { opacity: 0, x: 0, y: -100 },
+  };
+
   return (
-    <article>
+    <motion.article
+      variants={variants} // Pass the variant object into Framer Motion
+      initial="hidden" // Set the initial state to variants.hidden
+      animate="enter" // Animated state to variants.enter
+      exit="exit" // Exit state (used later) to variants.exit
+      transition={{ type: 'linear' }} // Set the transition to linear
+    >
       <section className="flex justify-center">
-        <h1 className="text-7xl font-medium xl:text-8xl">Sign Up</h1>
+        <h1 className="text-4xl font-medium lg:text-7xl xl:text-8xl">
+          Sign Up
+        </h1>
       </section>
       <div className="flex flex-col items-center justify-between py-16 xl:flex-row">
-        <section className="w-1/2">
+        <section className="w-3/4 xl:w-1/2">
           <Image
             src="/images/cake-job.png"
             width={3382}
@@ -224,21 +245,28 @@ const SignUpPage: NextPageWithLayout = () => {
             className="w-50"
           />
         </section>
-        <section className="w-1/2 px-10 py-4">
+        <section className="w-full py-4 xl:w-1/2 xl:px-10">
           {pendingVerifcation ? (
-            <div className="space-y-10">
+            <motion.div
+              variants={reverseVariants} // Pass the variant object into Framer Motion
+              initial="hidden" // Set the initial state to variants.hidden
+              animate="enter" // Animated state to variants.enter
+              exit="exit" // Exit state (used later) to variants.exit
+              transition={{ type: 'linear' }} // Set the transition to linear
+              className="space-y-10"
+            >
               <p className="text-xl">
                 We just sent you a verification code! Enter it here so that we
                 can be sure your email is legit and finish signing you up
               </p>
               <VerifyCodeForm />
-            </div>
+            </motion.div>
           ) : (
             <SignUpForm setPendingVerification={setPendingVerification} />
           )}
         </section>
       </div>
-    </article>
+    </motion.article>
   );
 };
 
