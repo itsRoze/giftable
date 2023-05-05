@@ -2,6 +2,7 @@ import Image from 'next/image';
 import PrimaryLayout from '~/components/layouts/website/PrimaryLayout';
 import { type NextPageWithLayout } from '~/pages/_app';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 const Icons = () => {
   const container = {
@@ -158,7 +159,7 @@ const Home: NextPageWithLayout = () => {
           whileTap={{ scale: 0.8 }}
           className="m-1 rounded-lg bg-sky-900 p-3 text-xl font-medium text-white shadow-md shadow-black hover:bg-sky-800 lg:p-6 lg:text-3xl  "
         >
-          Get Started Today
+          <Link href="/sign-up">Get Started Today</Link>
         </motion.button>
       </section>
     </>

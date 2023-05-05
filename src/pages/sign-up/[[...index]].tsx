@@ -209,7 +209,7 @@ const VerifyCodeForm: React.FC = () => {
         disabled={isSubmitting}
         className="h-16 w-24 rounded-2xl bg-sky-900 p-5 text-white shadow-md shadow-black transition duration-300 ease-in-out hover:bg-sky-800"
       >
-        {isSubmitting || true ? (
+        {isSubmitting ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin md:h-10 md:w-10" />
         ) : (
           <p className="text-lg">Submit</p>

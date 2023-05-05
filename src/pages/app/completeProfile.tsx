@@ -1,7 +1,7 @@
 import { type NextPageWithLayout } from '../_app';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 
@@ -35,7 +35,7 @@ const CompleteProfile: NextPageWithLayout = () => {
 
   const { toast } = useToast();
   const ctx = api.useContext();
-  const { mutate } = api.user.create.useMutation({
+  const { mutate, isLoading } = api.user.create.useMutation({
     onSuccess: () => {
       void ctx.user.invalidate();
       void router.push('/app');
@@ -103,16 +103,28 @@ const CompleteProfile: NextPageWithLayout = () => {
             />
           )}
         </AnimatePresence>
-        <Button
-          disabled={!isValid}
-          type="submit"
-          onClick={save}
-          className={`absolute right-4 bottom-0 -translate-y-1/2 transform ${
-            slide !== 2 ? 'hidden' : ''
-          }`}
-        >
-          Let&apos;s go!
-        </Button>
+        {isLoading ? (
+          <Button
+            disabled
+            className={`absolute right-4 bottom-0 -translate-y-1/2 transform ${
+              slide !== 2 ? 'hidden' : ''
+            }`}
+          >
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Submitting
+          </Button>
+        ) : (
+          <Button
+            disabled={!isValid}
+            type="submit"
+            onClick={save}
+            className={`absolute right-4 bottom-0 -translate-y-1/2 transform ${
+              slide !== 2 ? 'hidden' : ''
+            }`}
+          >
+            Let&apos;s go!
+          </Button>
+        )}
       </motion.div>
     </article>
   );
@@ -134,7 +146,7 @@ const NameSlide: React.FC<NameSlideProps> = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<NameInput>({
     resolver: zodResolver(z.object({ name: nameSchema })),
     defaultValues: {
@@ -175,7 +187,12 @@ const NameSlide: React.FC<NameSlideProps> = ({
         {errors.name && (
           <p className="text-sm text-red-400">{errors.name.message}</p>
         )}
-        <FormNavigation paginate={paginate} slide={slide} isValid={isValid} />
+        <FormNavigation
+          paginate={paginate}
+          slide={slide}
+          isValid={isValid}
+          isSubmitting={isSubmitting}
+        />
       </form>
     </FormAnimation>
   );
@@ -199,7 +216,7 @@ const PronounsSlide: React.FC<PronounsSlideProps> = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<PronounsInput>({
     resolver: zodResolver(z.object({ pronouns: pronounsSchema })),
     defaultValues: {
@@ -234,7 +251,12 @@ const PronounsSlide: React.FC<PronounsSlideProps> = ({
           {errors.pronouns && (
             <p className="text-sm text-red-400">{errors.pronouns.message}</p>
           )}
-          <FormNavigation paginate={paginate} slide={slide} isValid={isValid} />
+          <FormNavigation
+            paginate={paginate}
+            slide={slide}
+            isValid={isValid}
+            isSubmitting={isSubmitting}
+          />
         </form>
       </FormAnimation>
     </>
@@ -317,12 +339,14 @@ interface FormNavigationProps {
   slide: number;
   paginate: (newDirection: number) => void;
   isValid?: boolean;
+  isSubmitting?: boolean;
 }
 
 const FormNavigation: React.FC<FormNavigationProps> = ({
   slide,
   paginate,
   isValid,
+  isSubmitting,
 }) => {
   return (
     <div className="flex flex-col items-center">
@@ -338,7 +362,7 @@ const FormNavigation: React.FC<FormNavigationProps> = ({
         <ArrowLeft size={48} />
       </button>
       <button
-        disabled={!isValid}
+        disabled={!isValid || isSubmitting}
         type="submit"
         onKeyDown={(e) => {
           console.log(e.key);
@@ -346,10 +370,14 @@ const FormNavigation: React.FC<FormNavigationProps> = ({
         }}
         className={`absolute right-4 bottom-0 -translate-y-1/2 transform ${
           slide === 2 ? 'hidden' : ''
-        } ${!isValid ? 'cursor-not-allowed text-gray-300' : ''}
+        } ${!isValid || isSubmitting ? 'cursor-not-allowed text-gray-300' : ''}
         `}
       >
-        <ArrowRight size={48} />
+        {isSubmitting ? (
+          <Loader2 className="h-5 w-5 animate-spin" />
+        ) : (
+          <ArrowRight size={48} />
+        )}
       </button>
     </div>
   );
