@@ -2,11 +2,13 @@ import { useSignUp } from '@clerk/clerk-react';
 import type { ClerkAPIError } from '@clerk/types';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
 import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import PrimaryLayout from '~/components/layouts/website/PrimaryLayout';
 import { LoadingSpinner } from '~/components/Loading';
+import { Button } from '~/components/ui/button';
 import { type NextPageWithLayout } from '~/pages/_app';
 
 const parseErrorMessage = (err: {
@@ -45,7 +47,7 @@ const SignUpForm = ({
     handleSubmit,
     reset,
     setFocus,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<Inputs>();
 
   useEffect(() => {
@@ -124,12 +126,17 @@ const SignUpForm = ({
           {authErr}
         </p>
       )}
-      <button
+      <Button
+        disabled={isSubmitting}
         type="submit"
-        className=" rounded-2xl bg-sky-900 p-5 shadow-md shadow-black transition duration-300 ease-in-out hover:bg-sky-800"
+        className=" h-fit w-fit rounded-2xl bg-sky-900 p-5 shadow-md shadow-black transition duration-300 ease-in-out hover:bg-sky-800"
       >
-        <ArrowRightIcon className="h-5 w-5 text-white md:h-10 md:w-10 " />
-      </button>
+        {isSubmitting ? (
+          <Loader2 className="mr-2 h-5 w-5 animate-spin md:h-10  md:w-10" />
+        ) : (
+          <ArrowRightIcon className="h-5 w-5 text-white md:h-10 md:w-10 " />
+        )}
+      </Button>
     </form>
   );
 };
@@ -146,7 +153,7 @@ const VerifyCodeForm: React.FC = () => {
     register,
     handleSubmit,
     setFocus,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<VerifyFormInputs>({ defaultValues: { verificationCode: '' } });
 
   useEffect(() => {
@@ -197,12 +204,17 @@ const VerifyCodeForm: React.FC = () => {
           {authErr}
         </p>
       )}
-      <button
+      <Button
         type="submit"
-        className="rounded-2xl bg-sky-900 p-5 text-white shadow-md shadow-black transition duration-300 ease-in-out hover:bg-sky-800"
+        disabled={isSubmitting}
+        className="h-16 w-24 rounded-2xl bg-sky-900 p-5 text-white shadow-md shadow-black transition duration-300 ease-in-out hover:bg-sky-800"
       >
-        Submit
-      </button>
+        {isSubmitting || true ? (
+          <Loader2 className="mr-2 h-5 w-5 animate-spin md:h-10 md:w-10" />
+        ) : (
+          <p className="text-lg">Submit</p>
+        )}
+      </Button>
     </form>
   );
 };
